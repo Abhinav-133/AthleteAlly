@@ -78,32 +78,38 @@ export default function LandingPage() {
     {
       name: "John Doe",
       sport: "Swimming",
-      image: "/placeholder.svg?height=200&width=200",
+      image:
+        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
     {
       name: "Jane Smith",
       sport: "Track and Field",
-      image: "/placeholder.svg?height=200&width=200",
+      image:
+        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
     {
       name: "Mike Johnson",
       sport: "Basketball",
-      image: "/placeholder.svg?height=200&width=200",
+      image:
+        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
     {
       name: "Sarah Williams",
       sport: "Tennis",
-      image: "/placeholder.svg?height=200&width=200",
+      image:
+        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
     {
       name: "Alex Brown",
       sport: "Soccer",
-      image: "/placeholder.svg?height=200&width=200",
+      image:
+        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
     {
       name: "Emily Davis",
       sport: "Gymnastics",
-      image: "/placeholder.svg?height=200&width=200",
+      image:
+        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
   ];
 
@@ -467,6 +473,27 @@ export default function LandingPage() {
               </motion.div>
             ))}
           </div>
+        </div>
+      </motion.section>
+      <motion.section
+        id="cta"
+        className="py-16 bg-gradient-to-r from-gray-900 to-black"
+        initial={{ opacity: 0 }}
+        whileInView={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+        viewport={{ once: true }}
+      >
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl font-bold mb-4 text-white">
+            Ready to Elevate Your Game?
+          </h2>
+          <p className="text-xl mb-8 text-gray-300">
+            Join athleteally today and take your athletic journey to new
+            heights!
+          </p>
+          <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+            Get Started Now
+          </button>
         </div>
       </motion.section>
       {/* Footer */}
