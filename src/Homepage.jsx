@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
+import { Link } from "react-router-dom";
 import {
   Calendar,
   Dumbbell,
@@ -40,6 +41,32 @@ const FeaturedAthleteMarquee = ({ athletes }) => {
     </div>
   );
 };
+
+const ParticleBackground = () => (
+  <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    {[...Array(200)].map((_, i) => (
+      <motion.div
+        key={i}
+        className="absolute w-2 h-2 bg-blue-500 rounded-full"
+        initial={{
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+        }}
+        animate={{
+          x: Math.random() * window.innerWidth,
+          y: Math.random() * window.innerHeight,
+          transition: {
+            duration: Math.random() * 10 + 8,
+            repeat: Infinity,
+            repeatType: "reverse",
+          },
+        }}
+        style={{ opacity: Math.random() * 0.5 + 0.1 }}
+      />
+    ))}
+  </div>
+);
+
 
 const NewsMarquee = ({ news }) => {
   return (
@@ -124,6 +151,7 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-black text-gray-200">
+      <ParticleBackground />
       {/* Header */}
       <motion.header
         className={`py-4 fixed w-full z-50 transition-all duration-300 ${navbarBackground}`}
@@ -266,21 +294,24 @@ export default function LandingPage() {
       </div>
       {/* Hero Section */}
       <motion.section
-        className="pt-32 pb-20 bg-gradient-to-b from-gray-900 to-black text-center relative overflow-hidden"
+        className="pt-32 pb-20 text-center relative overflow-hidden"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ duration: 1 }}
       >
         <div className="container mx-auto px-4 relative z-10">
+          <ParticleBackground />
           <h2 className="text-5xl font-bold mb-4 text-gray-100">
             Empowering Athletes Worldwide
           </h2>
           <p className="text-xl mb-8 text-gray-300">
             Your ultimate destination for sports news, gear, and community
           </p>
-          <button className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold py-3 px-6 rounded-full transition-colors text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-            Join Now
-          </button>
+          <Link to="/register-options">
+  <button className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold py-3 px-6 rounded-full transition-colors text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+    Join Now
+  </button>
+</Link>
         </div>
 
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent"></div>
@@ -507,9 +538,9 @@ export default function LandingPage() {
           <div className="flex flex-col md:flex-row justify-between items-center">
             <div className="mb-4 md:mb-0">
               <h2 className="text-2xl font-bold mb-2 text-gray-100">
-                athleteally
+                AthleteAlly
               </h2>
-              <p className="text-gray-300">Empowering athletes worldwide</p>
+              <p className="text-gray-300">Empowering Athletes Worldwide</p>
             </div>
             <nav>
               <ul className="flex space-x-4">
@@ -541,7 +572,7 @@ export default function LandingPage() {
             </nav>
           </div>
           <div className="mt-8 text-center text-gray-400">
-            <p>&copy; 2023 athleteally. All rights reserved.</p>
+            <p>&copy; 2024 AthleteAlly. All rights reserved.</p>
           </div>
         </div>
       </motion.footer>
