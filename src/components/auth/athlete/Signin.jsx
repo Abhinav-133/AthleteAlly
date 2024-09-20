@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Loader2, Mail, Lock } from 'lucide-react'
 import { Button, TextField, Typography, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
 const SignIn = () => {
   const [email, setEmail] = useState('')
