@@ -177,15 +177,6 @@ export default function HomePage() {
     },
   ];
 
-  const latestNews = [
-    "Breaking: New world record set in 100m sprint!",
-    "Upcoming tournament announced for next month",
-    "Athlete of the Year awards ceremony scheduled",
-    "New sports facility opens in downtown",
-    "Local team wins national championship",
-    "Sports science breakthrough promises improved performance",
-  ];
-
   return (
     <div className="min-h-screen bg-black text-gray-200">
       <ParticleBackground />
@@ -397,7 +388,7 @@ export default function HomePage() {
                   whileHover={{ scale: 1.05 }}
                   whileTap={{ scale: 0.95 }}
                 >
-                  <div className="bg-gray-800 rounded-lg shadow-lg p-6 relative overflow-hidden">
+                  <div className="bg-gray-800 rounded-lg shadow-lg p-6 relative overflow-hidden h-80">
                     <h3 className="text-xl font-semibold mb-2 text-gray-100">
                       {article.title}
                     </h3>
