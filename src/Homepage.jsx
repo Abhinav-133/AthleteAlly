@@ -82,7 +82,7 @@ const NewsMarquee = ({ news }) => {
   );
 };
 
-export default function LandingPage() {
+export default function Homepage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();

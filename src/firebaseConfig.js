@@ -4,17 +4,15 @@ import { getAuth } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.REACT_APP_FIREBASE_API_KEY,
-  authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_FIREBASE_APP_ID,
-  measurementId: process.env.REACT_APP_FIREBASE_MEASUREMENT_ID,
+  apiKey:"AIzaSyAK1fHPnYd5QZDqA6x74Sad9mpKQw2uXic",
+  authDomain: "athleteally-3c235.firebaseapp.com",
+  projectId: "athleteally-3c235",
+  storageBucket: "athleteally-3c235.appspot.com",
+  messagingSenderId: "424160962540",
+  appId: "1:424160962540:web:ceaa25805f9599e78202c9",
+  measurementId:"G-K4T3JQVHEG",
 };
 
-// firebase.initializeApp(config);
-// var db = firebase.firestore();
 const app = initializeApp(firebaseConfig);
 export const analytics = getAnalytics(app);
 export const auth = getAuth(app);

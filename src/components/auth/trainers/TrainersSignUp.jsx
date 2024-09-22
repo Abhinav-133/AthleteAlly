@@ -1,66 +1,75 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { Loader2, Mail, Lock, Phone, User, Calendar, Link } from 'lucide-react'
-import { Button, TextField, Typography, Alert, MenuItem } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { Loader2, Mail, Lock, Phone, User, Calendar, Link } from "lucide-react";
+import { Button, TextField, Typography, Alert, MenuItem } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 
-const SignUp = () => {
-  const [step, setStep] = useState(1)  // To track the form step
+const TrainersSignUp = () => {
+  const [step, setStep] = useState(1); // To track the form step
   const [formData, setFormData] = useState({
-    name: '',
-    age: '',
-    dob: '',
-    district: '',
-    state: '',
-    email: '',
-    password: '',
-    gender: '',
-    sport: '',
-    experience: '',
-    contactNo: '',
-    adharCard: ''
-  })
+    name: "",
+    age: "",
+    dob: "",
+    district: "",
+    state: "",
+    email: "",
+    password: "",
+    gender: "",
+    sport: "",
+    experience: "",
+    contactNo: "",
+    adharCard: "",
+  });
 
-  const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const navigate = useNavigate()
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [photoPreview, setPhotoPreview] = useState('')
+  const navigate = useNavigate();
 
   const handleNext = (event) => {
-    event.preventDefault()
-    setError(null)
+    event.preventDefault();
+    setError(null);
     // Add validation if necessary for step 1 before proceeding to step 2
-    if (formData.name && formData.age && formData.dob && formData.district && formData.state && formData.email && formData.password) {
-      setStep(2)
+    if (
+      formData.name &&
+      formData.age &&
+      formData.dob &&
+      formData.district &&
+      formData.state &&
+      formData.email &&
+      formData.password
+    ) {
+      setStep(2);
     } else {
-      setError('Please fill in all the required fields.')
+      setError("Please fill in all the required fields.");
     }
-  }
+  };
 
   const handleSubmit = async (event) => {
-    event.preventDefault()
-    setLoading(true)
-    setError(null)
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
 
     try {
       // Simulating sign-up process
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      console.log('Signed up with:', formData)
-      navigate('/dashboard')
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+      console.log("Signed up with:", formData);
+      navigate("/dashboard");
     } catch (err) {
-      setError('Failed to sign up. Please check your details.')
+      setError("Failed to sign up. Please check your details.");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
   const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value })
-  }
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-900 to-black flex flex-col justify-center items-center p-4 sm:p-8">
+    <div className="min-h-screen bg-gradient-to-b from-black to-blue-900 flex flex-col justify-center items-center p-4 sm:p-8">
       <motion.div
         initial={{ opacity: 0, y: -50 }}
         animate={{ opacity: 1, y: 0 }}
@@ -73,7 +82,7 @@ const SignUp = () => {
           transition={{ delay: 0.2 }}
           className="text-4xl font-bold text-white mb-8 text-center"
         >
-          {step === 1 ? 'Sign Up: Basic Info' : 'Sign Up: Additional Info'}
+          {step === 1 ? "Sign Up: Basic Info" : "Sign Up: Additional Info"}
         </motion.h1>
         {error && (
           <motion.div
@@ -82,7 +91,10 @@ const SignUp = () => {
             transition={{ delay: 0.3 }}
             className="mb-6"
           >
-            <Alert severity="error" className="text-white bg-red-600 border-red-700">
+            <Alert
+              severity="error"
+              className="text-white bg-red-600 border-red-700"
+            >
               {error}
             </Alert>
           </motion.div>
@@ -101,7 +113,11 @@ const SignUp = () => {
               onChange={handleChange}
               InputProps={{
                 startAdornment: (
-                  <User className="text-gray-400" size={20} style={{ marginRight: 10 }} />
+                  <User
+                    className="text-gray-400"
+                    size={20}
+                    style={{ marginRight: 10 }}
+                  />
                 ),
               }}
               className="bg-gray-700 text-white rounded-lg"
@@ -157,7 +173,11 @@ const SignUp = () => {
               onChange={handleChange}
               InputProps={{
                 startAdornment: (
-                  <Mail className="text-gray-400" size={20} style={{ marginRight: 10 }} />
+                  <Mail
+                    className="text-gray-400"
+                    size={20}
+                    style={{ marginRight: 10 }}
+                  />
                 ),
               }}
               className="bg-gray-700 text-white rounded-lg"
@@ -173,7 +193,11 @@ const SignUp = () => {
               onChange={handleChange}
               InputProps={{
                 startAdornment: (
-                  <Lock className="text-gray-400" size={20} style={{ marginRight: 10 }} />
+                  <Lock
+                    className="text-gray-400"
+                    size={20}
+                    style={{ marginRight: 10 }}
+                  />
                 ),
               }}
               className="bg-gray-700 text-white rounded-lg"
@@ -227,7 +251,6 @@ const SignUp = () => {
               className="bg-gray-700 text-white rounded-lg"
             />
             <TextField
-              label="Contact No."
               name="contactNo"
               variant="outlined"
               placeholder="Enter your contact number"
@@ -236,7 +259,11 @@ const SignUp = () => {
               onChange={handleChange}
               InputProps={{
                 startAdornment: (
-                  <Phone className="text-gray-400" size={20} style={{ marginRight: 10 }} />
+                  <Phone
+                    className="text-gray-400"
+                    size={20}
+                    style={{ marginRight: 10 }}
+                  />
                 ),
               }}
               className="bg-gray-700 text-white rounded-lg"
@@ -251,7 +278,30 @@ const SignUp = () => {
               onChange={handleChange}
               className="bg-gray-700 text-white rounded-lg"
             />
-            <Link to="/athlete-signup">
+             {/* Add Photo Upload */}
+             <div className="flex flex-col items-center space-y-4">
+              <Button
+                variant="outlined"
+                component="label"
+                className="w-full py-3 text-lg font-semibold border-dashed border-gray-500 text-gray-400"
+              >
+                {formData.photo ? 'Change Photo' : 'Upload Photo'}
+                <input
+                  type="file"
+                  name="photo"
+                  hidden
+                  accept="image/*"
+                  onChange={handleChange}
+                />
+              </Button>
+              {photoPreview && (
+                <img
+                  src={photoPreview}
+                  alt="Preview"
+                  className="w-24 h-24 rounded-full object-cover"
+                />
+              )}
+            </div>
             <Button
               type="submit"
               variant="contained"
@@ -266,16 +316,14 @@ const SignUp = () => {
                   Signing Up...
                 </>
               ) : (
-                'Sign Up'
+                "Sign Up"
               )}
             </Button>
-            </Link>
-            
           </form>
         )}
       </motion.div>
     </div>
-  )
-}
+  );
+};
 
-export default SignUp
+export default TrainersSignUp;
