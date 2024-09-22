@@ -67,7 +67,6 @@ const ParticleBackground = () => (
   </div>
 );
 
-
 const NewsMarquee = ({ news }) => {
   return (
     <div className="overflow-hidden bg-gray-900 py-2">
@@ -82,12 +81,50 @@ const NewsMarquee = ({ news }) => {
   );
 };
 
-export default function LandingPage() {
+export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();
+  const [newsUrl, setNewsUrl] = useState("");
+  const [top7News, setTop7news] = useState([]);
+  const [top3Articles, setTop3Articles] = useState();
+
+  const getLast7DaysNews = () => {
+    const today = new Date();
+    const last7Days = new Date(today);
+    last7Days.setDate(today.getDate() - 7);
+
+    const formattedFromDate = last7Days.toISOString().split("T")[0];
+    const url = `https://newsapi.org/v2/everything?q=Sports&from=${formattedFromDate}&sortBy=popularity&sources=the-times-of-india,ndtv,the-hindu&apiKey=${
+      import.meta.env.VITE_NEWSAPI_KEY
+    }`;
+
+    console.log(url);
+    setNewsUrl(url);
+  };
+
+  const fetchNews = async () => {
+    let response = await fetch(newsUrl);
+    response = await response.json();
+
+    //Extract the top 3 articles
+    setTop3Articles(response.articles.slice(0, 3));
+
+    // Extract the top 7 articles
+    const articles = response.articles.slice(0, 7);
+    // Update state once with the titles of the articles
+    setTop7news((prevArticles) => [
+      ...prevArticles,
+      ...articles.map((item) => item.title),
+    ]);
+  };
 
   useEffect(() => {
+    fetchNews();
+  }, [newsUrl]);
+
+  useEffect(() => {
+    getLast7DaysNews();
     controls.start({ opacity: 1, y: 0 });
 
     const handleScroll = () => {
@@ -138,15 +175,6 @@ export default function LandingPage() {
       image:
         "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
     },
-  ];
-
-  const latestNews = [
-    "Breaking: New world record set in 100m sprint!",
-    "Upcoming tournament announced for next month",
-    "Athlete of the Year awards ceremony scheduled",
-    "New sports facility opens in downtown",
-    "Local team wins national championship",
-    "Sports science breakthrough promises improved performance",
   ];
 
   return (
@@ -290,7 +318,7 @@ export default function LandingPage() {
       )}
       {/* News Marquee */}
       <div className="pt-16">
-        <NewsMarquee news={latestNews} />
+        <NewsMarquee news={top7News} />
       </div>
       {/* Hero Section */}
       <motion.section
@@ -308,10 +336,10 @@ export default function LandingPage() {
             Your ultimate destination for sports news, gear, and community
           </p>
           <Link to="/register-options">
-  <button className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold py-3 px-6 rounded-full transition-colors text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
-    Join Now
-  </button>
-</Link>
+            <button className="bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold py-3 px-6 rounded-full transition-colors text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1">
+              Join Now
+            </button>
+          </Link>
         </div>
 
         <div className="absolute bottom-0 left-0 w-full h-32 bg-gradient-to-t from-black to-transparent"></div>
@@ -354,34 +382,31 @@ export default function LandingPage() {
             Latest News
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="bg-gray-800 rounded-lg shadow-lg p-6 relative overflow-hidden">
-                  <h3 className="text-xl font-semibold mb-2 text-gray-100">
-                    Breaking Sports News {i}
-                  </h3>
-                  <p className="text-gray-300 mb-4">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed
-                    do eiusmod tempor incididunt ut labore et dolore magna
-                    aliqua.
-                  </p>
-                  <a
-                    href="#"
-                    className="text-gray-400 hover:text-gray-200 inline-flex items-center transition-colors"
-                  >
-                    Read more <ArrowRight className="ml-2 h-4 w-4" />
-                  </a>
-                  <div className="absolute top-0 right-0 w-16 h-16 bg-gray-700 rounded-bl-lg flex items-center justify-center">
-                    <Newspaper className="w-8 h-8 text-gray-300" />
+            {top3Articles &&
+              top3Articles.map((article) => (
+                <motion.div
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                >
+                  <div className="bg-gray-800 rounded-lg shadow-lg p-6 relative overflow-hidden h-80">
+                    <h3 className="text-xl font-semibold mb-2 text-gray-100">
+                      {article.title}
+                    </h3>
+                    <p className="text-gray-300 mb-4">{article.description}</p>
+                    <Link
+                      to={article.url}
+                      target="_blank"
+                      className="text-gray-400 hover:text-gray-200 inline-flex items-center transition-colors"
+                    >
+                      Read more <ArrowRight className="ml-2 h-4 w-4" />
+                    </Link>
+                    <div className="absolute top-0 right-0 w-16 h-16 bg-gray-700 rounded-bl-lg flex items-center justify-center">
+                      <Newspaper className="w-8 h-8 text-gray-300" />
+                    </div>
+                    <div className="absolute bottom-0 left-0 w-24 h-24 bg-gray-700 rounded-tr-full opacity-10"></div>
                   </div>
-                  <div className="absolute bottom-0 left-0 w-24 h-24 bg-gray-700 rounded-tr-full opacity-10"></div>
-                </div>
-              </motion.div>
-            ))}
+                </motion.div>
+              ))}
           </div>
         </div>
       </motion.section>
