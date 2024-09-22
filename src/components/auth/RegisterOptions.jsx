@@ -84,6 +84,7 @@ export default function RegistrationOptions() {
             title="Trainer"
             description="Share your expertise, coach athletes, and build your professional network."
             buttonText="Register as trainer"
+            link={"/trainer-login"}
           />
         </motion.div>
         <motion.div variants={itemVariants}>

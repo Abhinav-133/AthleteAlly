@@ -82,6 +82,7 @@ const NewsMarquee = ({ news }) => {
 };
 
 export default function HomePage() {
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();
