@@ -20,8 +20,9 @@ import SportsGear from "./components/Athlete Dashboard/SportsGear";
 import Tournaments from "./components/Athlete Dashboard/Tournaments";
 import JobPortal from "./components/Athlete Dashboard/JobPortal";
 import LatestNews from "./components/Athlete Dashboard/LatestNews";
-import Sponsor from "./Sponsor";
-
+import Sponsor from "./pages/Sponsor/Sponsor";
+import SponsorUpcomingEvents from "./pages/Sponsor/UpcomingEvents";
+import SponsorPastEvents from "./pages/Sponsor/PastEvents";
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -44,6 +45,11 @@ const router = createBrowserRouter(
       <Route path="/trainer-login" element={<TrainersSignIn />} />
       <Route path="/trainer-signup" element={<TrainersSignUp />} />
       <Route path="/sponsor" element={<Sponsor />} />
+      <Route
+        path="/sponsor/upcoming-events"
+        element={<SponsorUpcomingEvents />}
+      />
+      <Route path="/sponsor/past-events" element={<SponsorPastEvents />} />
     </>
   )
 );

@@ -1,14 +1,12 @@
-import { useState } from "react";
 import {
-  ChevronDown,
-  ChevronUp,
   BarChart,
   Users,
-  Calendar,
   DollarSign,
   ArrowUpRight,
   ArrowDownRight,
 } from "lucide-react";
+
+import Sidebar from "./Sidebar";
 
 // Mock data for the logged-in sponsor
 const sponsorData = {
@@ -92,57 +90,6 @@ export default function SponsorDashboard() {
         </main>
       </div>
     </>
-  );
-}
-
-function Sidebar() {
-  return (
-    <aside className="w-64 bg-gray-800 p-6 space-y-6">
-      <SidebarSection
-        title="Dashboard"
-        items={["Overview", "Analytics", "Reports"]}
-      />
-      <SidebarSection
-        title="Sponsorships"
-        items={["Current Deals", "Opportunities", "History"]}
-      />
-      <SidebarSection
-        title="Events"
-        items={["Upcoming", "Past Events", "Calendar"]}
-      />
-      <SidebarSection
-        title="Account"
-        items={["Profile", "Billing", "Settings"]}
-      />
-    </aside>
-  );
-}
-
-function SidebarSection({ title, items }) {
-  const [isOpen, setIsOpen] = useState(true);
-
-  return (
-    <div>
-      <button
-        className="flex items-center justify-between w-full text-left font-semibold mb-2"
-        onClick={() => setIsOpen(!isOpen)}
-      >
-        {title}
-        {isOpen ? <ChevronUp size={20} /> : <ChevronDown size={20} />}
-      </button>
-      {isOpen && (
-        <ul className="space-y-2">
-          {items.map((item, index) => (
-            <li
-              key={index}
-              className="text-gray-300 hover:text-white cursor-pointer"
-            >
-              {item}
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
   );
 }
 
