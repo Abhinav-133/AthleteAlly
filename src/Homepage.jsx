@@ -82,7 +82,6 @@ const NewsMarquee = ({ news }) => {
 };
 
 export default function HomePage() {
-
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
   const controls = useAnimation();
@@ -99,12 +98,11 @@ export default function HomePage() {
     const url = `https://newsapi.org/v2/everything?q=Sports&from=${formattedFromDate}&sortBy=popularity&sources=the-times-of-india,ndtv,the-hindu&apiKey=${
       import.meta.env.VITE_NEWSAPI_KEY
     }`;
-
-    console.log(url);
     setNewsUrl(url);
   };
 
   const fetchNews = async () => {
+    console.log(newsUrl);
     let response = await fetch(newsUrl);
     response = await response.json();
 
