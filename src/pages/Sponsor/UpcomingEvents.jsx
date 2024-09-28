@@ -1,127 +1,153 @@
-import { useState } from "react";
+import React from "react";
 import {
-  ChevronDown,
-  ChevronUp,
-  Calendar,
-  MapPin,
-  Users,
-  ExternalLink,
+  CalendarIcon,
+  MapPinIcon,
+  DollarSignIcon,
+  UsersIcon,
+  ClockIcon,
+  MessageCircle,
 } from "lucide-react";
 
 import Sidebar from "./Sidebar";
 
 const upcomingEvents = [
   {
-    id: 1,
-    name: "Summer Championship",
-    date: "2023-07-15",
-    location: "Central Stadium, New York",
-    description:
-      "Annual summer sports championship featuring various athletic competitions.",
-    attendees: 5000,
-    sponsors: ["SportGear Pro", "AthleteBoost"],
+    name: "World Cup 2023",
+    date: "Dec 1-15, 2023",
+    location: "Qatar",
+    invested: 5000000,
+    expectedAttendance: 100000,
+    duration: "15 days",
+    image:
+      "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: 2,
-    name: "Athlete Meet and Greet",
-    date: "2023-08-02",
-    location: "Sports Complex, Los Angeles",
-    description:
-      "Fan event where supporters can meet their favorite athletes and get autographs.",
-    attendees: 2000,
-    sponsors: ["FitFuel", "SpeedTech"],
+    name: "Olympics 2024",
+    date: "Jul 26 - Aug 11, 2024",
+    location: "Paris, France",
+    invested: 10000000,
+    expectedAttendance: 500000,
+    duration: "17 days",
+    image:
+      "https://images.unsplash.com/photo-1519682577862-22b62b24e493?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: 3,
-    name: "Fall Tournament",
-    date: "2023-09-10",
-    location: "Riverside Arena, Chicago",
-    description:
-      "Competitive tournament marking the beginning of the fall sports season.",
-    attendees: 3500,
-    sponsors: ["EnduranceElite", "SportGear Pro"],
+    name: "Super Bowl LVIII",
+    date: "Feb 11, 2024",
+    location: "Las Vegas, Nevada",
+    invested: 8000000,
+    expectedAttendance: 80000,
+    duration: "1 day",
+    image:
+      "https://images.unsplash.com/photo-1566577739112-5180d4bf9390?auto=format&fit=crop&w=800&q=80",
   },
   {
-    id: 4,
-    name: "Charity Sports Gala",
-    date: "2023-10-05",
-    location: "Grand Hall, Miami",
-    description:
-      "Annual charity event combining sports demonstrations with fundraising activities.",
-    attendees: 1000,
-    sponsors: ["AthleteBoost", "FitFuel"],
+    name: "Wimbledon 2024",
+    date: "Jul 1-14, 2024",
+    location: "London, UK",
+    invested: 3000000,
+    expectedAttendance: 50000,
+    duration: "14 days",
+    image:
+      "https://images.unsplash.com/photo-1529926706528-db9e5010cd3e?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "UEFA Euro 2024",
+    date: "Jun 14 - Jul 14, 2024",
+    location: "Germany",
+    invested: 6000000,
+    expectedAttendance: 300000,
+    duration: "31 days",
+    image:
+      "https://images.unsplash.com/photo-1508098682722-e99c43a406b2?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "World Cup 2023",
+    date: "Dec 1-15, 2023",
+    location: "Qatar",
+    invested: 5000000,
+    expectedAttendance: 100000,
+    duration: "15 days",
+    image:
+      "https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&w=800&q=80",
+  },
+  {
+    name: "Olympics 2024",
+    date: "Jul 26 - Aug 11, 2024",
+    location: "Paris, France",
+    invested: 10000000,
+    expectedAttendance: 500000,
+    duration: "17 days",
+    image:
+      "https://images.unsplash.com/photo-1519682577862-22b62b24e493?auto=format&fit=crop&w=800&q=80",
   },
 ];
 
-export default function UpcomingEventsPage() {
+function EventCard({ event }) {
   return (
-    <div className="flex bg-gray-900 text-white min-h-screen">
-      <Sidebar />
-      <main className="flex-1 p-8">
-        <h1 className="text-3xl font-bold mb-8">Upcoming Events</h1>
-        <div className="space-y-6">
-          {upcomingEvents.map((event) => (
-            <EventCard key={event.id} event={event} />
-          ))}
+    <div className="bg-white shadow-lg rounded-lg overflow-hidden border border-blue-200 transition-all duration-300 hover:shadow-xl hover:scale-105">
+      <div className="relative">
+        <img
+          src={event.image}
+          alt={event.name}
+          className="w-full h-48 object-cover"
+        />
+        <div className="absolute top-0 left-0 right-0 bg-gradient-to-b from-blue-600 to-blue-600/70 text-white px-4 py-2">
+          <h3 className="text-xl font-semibold">{event.name}</h3>
         </div>
-      </main>
+      </div>
+      <div className="p-4 space-y-3">
+        <div className="flex items-center text-blue-800">
+          <CalendarIcon className="w-5 h-5 mr-2" />
+          <span>{event.date}</span>
+        </div>
+        <div className="flex items-center text-blue-800">
+          <MapPinIcon className="w-5 h-5 mr-2" />
+          <span>{event.location}</span>
+        </div>
+        <div className="flex items-center text-blue-800">
+          <ClockIcon className="w-5 h-5 mr-2" />
+          <span>{event.duration}</span>
+        </div>
+        <div className="flex items-center text-blue-800">
+          <DollarSignIcon className="w-5 h-5 mr-2" />
+          <span>{`$${(event.invested / 1000000).toFixed(1)}M invested`}</span>
+        </div>
+        <div className="flex items-center text-blue-800">
+          <UsersIcon className="w-5 h-5 mr-2" />
+          <span>{`${(event.expectedAttendance / 1000).toFixed(
+            0
+          )}K expected attendance`}</span>
+        </div>
+      </div>
     </div>
   );
 }
 
-function EventCard({ event }) {
-  const [isExpanded, setIsExpanded] = useState(false);
-
+export default function UpcomingEvents() {
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
-      <div className="flex justify-between items-start mb-4">
-        <div>
-          <h2 className="text-xl font-semibold mb-2">{event.name}</h2>
-          <p className="text-blue-400 flex items-center">
-            <Calendar size={16} className="mr-2" />
-            {new Date(event.date).toLocaleDateString("en-US", {
-              year: "numeric",
-              month: "long",
-              day: "numeric",
-            })}
+    <div className="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
+      <div className="flex">
+        {/* Sidebar Section */}
+        <div className="fixed w-64 h-screen">
+          <Sidebar />
+        </div>
+
+        {/* Main Content Section */}
+        <div className="flex-1 ml-64 p-8">
+          <h1 className="text-4xl font-bold text-blue-900 mb-2 text-center">
+            Upcoming Sponsored Events
+          </h1>
+          <p className="text-xl text-blue-600 mb-8 text-center">
+            Join us at these exciting sports events!
           </p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {upcomingEvents.map((event, index) => (
+              <EventCard key={index} event={event} />
+            ))}
+          </div>
         </div>
-        <button
-          onClick={() => setIsExpanded(!isExpanded)}
-          className="text-blue-400 hover:text-blue-300 transition-colors"
-          aria-expanded={isExpanded}
-        >
-          {isExpanded ? <ChevronUp size={24} /> : <ChevronDown size={24} />}
-        </button>
       </div>
-      <p className="text-gray-300 mb-4 flex items-center">
-        <MapPin size={16} className="mr-2" />
-        {event.location}
-      </p>
-      {isExpanded && (
-        <div className="mt-4 space-y-4">
-          <p className="text-gray-300">{event.description}</p>
-          <div className="flex items-center text-gray-300">
-            <Users size={16} className="mr-2" />
-            <span>Expected Attendees: {event.attendees.toLocaleString()}</span>
-          </div>
-          <div>
-            <h3 className="font-semibold mb-2">Sponsors:</h3>
-            <ul className="list-disc list-inside text-gray-300">
-              {event.sponsors.map((sponsor, index) => (
-                <li key={index}>{sponsor}</li>
-              ))}
-            </ul>
-          </div>
-          <a
-            href="#"
-            className="inline-flex items-center text-blue-400 hover:text-blue-300 transition-colors"
-          >
-            More Details
-            <ExternalLink size={16} className="ml-1" />
-          </a>
-        </div>
-      )}
     </div>
   );
 }

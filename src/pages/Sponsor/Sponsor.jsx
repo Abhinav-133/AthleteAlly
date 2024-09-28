@@ -1,117 +1,146 @@
-import {
-  BarChart,
-  Users,
-  DollarSign,
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react";
-
+import React from "react";
+import { DollarSignIcon, UsersIcon } from "lucide-react";
 import Sidebar from "./Sidebar";
 
-// Mock data for the logged-in sponsor
-const sponsorData = {
-  name: "SportGear Pro",
-  tier: "Platinum",
-  logo: "/placeholder.svg?height=100&width=200",
-  stats: {
-    impressions: 1250000,
-    clicks: 75000,
-    conversions: 3000,
-    roi: 250,
+const sponsoredEvents = [
+  {
+    name: "World Cup 2023",
+    date: "Dec 1-15, 2023",
+    invested: 5000000,
+    headcount: 100000,
   },
-  upcomingEvents: [
-    { name: "Summer Championship", date: "2023-07-15" },
-    { name: "Athlete Meet and Greet", date: "2023-08-02" },
-    { name: "Fall Tournament", date: "2023-09-10" },
-  ],
-};
+  {
+    name: "Olympics 2024",
+    date: "Jul 26 - Aug 11, 2024",
+    invested: 10000000,
+    headcount: 500000,
+  },
+  {
+    name: "Super Bowl LVIII",
+    date: "Feb 11, 2024",
+    invested: 8000000,
+    headcount: 80000,
+  },
+  {
+    name: "Wimbledon 2024",
+    date: "Jul 1-14, 2024",
+    invested: 3000000,
+    headcount: 50000,
+  },
+];
 
-export default function SponsorDashboard() {
+const sponsoredAthletes = [
+  { name: "John Doe", sport: "Soccer", invested: 2000000, followers: 5000000 },
+  {
+    name: "Jane Smith",
+    sport: "Swimming",
+    invested: 1500000,
+    followers: 3000000,
+  },
+  {
+    name: "Mike Johnson",
+    sport: "Basketball",
+    invested: 3000000,
+    followers: 7000000,
+  },
+  {
+    name: "Emily Brown",
+    sport: "Tennis",
+    invested: 1800000,
+    followers: 4000000,
+  },
+];
+
+const sponsoredTeams = [
+  {
+    name: "Red Dragons",
+    sport: "Soccer",
+    invested: 10000000,
+    fanbase: 2000000,
+  },
+  {
+    name: "Blue Sharks",
+    sport: "Basketball",
+    invested: 8000000,
+    fanbase: 1500000,
+  },
+  {
+    name: "Green Eagles",
+    sport: "American Football",
+    invested: 12000000,
+    fanbase: 3000000,
+  },
+  {
+    name: "Purple Lions",
+    sport: "Hockey",
+    invested: 6000000,
+    fanbase: 1000000,
+  },
+];
+
+function SponsoredSection({ title, items, type }) {
   return (
-    <>
-      <div className="flex bg-gray-900 text-white min-h-screen">
-        <Sidebar />
-        <main className="flex-1 p-8">
-          <header className="flex items-center justify-between mb-8">
-            <div>
-              <h1 className="text-3xl font-bold">
-                Welcome, {sponsorData.name}
-              </h1>
-              <p className="text-blue-400">{sponsorData.tier} Sponsor</p>
+    <div className="bg-white shadow rounded-lg p-6 border border-blue-200">
+      <h3 className="text-xl font-semibold mb-4 text-blue-800">{title}</h3>
+      <ul className="space-y-4">
+        {items.map((item, index) => (
+          <li
+            key={index}
+            className="border-b border-blue-100 pb-4 last:border-b-0 last:pb-0"
+          >
+            <div className="flex justify-between items-center mb-2">
+              <span className="font-medium text-blue-900">{item.name}</span>
+              <span className="text-sm text-blue-600">
+                {item.date || item.sport}
+              </span>
             </div>
-            <img
-              src={sponsorData.logo}
-              alt={`${sponsorData.name} logo`}
-              className="w-32 h-16 object-contain"
-            />
-          </header>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-            <StatCard
-              title="Impressions"
-              value={sponsorData.stats.impressions.toLocaleString()}
-              icon={<Users />}
-              trend="up"
-            />
-            <StatCard
-              title="Clicks"
-              value={sponsorData.stats.clicks.toLocaleString()}
-              icon={<BarChart />}
-              trend="up"
-            />
-            <StatCard
-              title="Conversions"
-              value={sponsorData.stats.conversions.toLocaleString()}
-              icon={<ArrowUpRight />}
-              trend="down"
-            />
-            <StatCard
-              title="ROI"
-              value={`${sponsorData.stats.roi}%`}
-              icon={<DollarSign />}
-              trend="up"
-            />
-          </div>
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h2 className="text-xl font-semibold mb-4">
-              Upcoming Sponsored Events
-            </h2>
-            <ul className="space-y-4">
-              {sponsorData.upcomingEvents.map((event, index) => (
-                <li
-                  key={index}
-                  className="flex justify-between items-center border-b border-gray-700 pb-2"
-                >
-                  <span>{event.name}</span>
-                  <span className="text-blue-400">{event.date}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </main>
-      </div>
-    </>
+            <div className="flex justify-between text-sm">
+              <div className="flex items-center text-blue-700">
+                <DollarSignIcon className="w-4 h-4 mr-1" />
+                <span>{`$${(item.invested / 1000000).toFixed(1)}M`}</span>
+              </div>
+              <div className="flex items-center text-blue-700">
+                <UsersIcon className="w-4 h-4 mr-1" />
+                <span>
+                  {type === "event" && `${(item.headcount / 1000).toFixed(0)}K`}
+                  {type === "athlete" &&
+                    `${(item.followers / 1000000).toFixed(1)}M followers`}
+                  {type === "team" &&
+                    `${(item.fanbase / 1000000).toFixed(1)}M fans`}
+                </span>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
-function StatCard({ title, value, icon, trend }) {
+export default function Sponsor() {
   return (
-    <div className="bg-gray-800 rounded-lg p-6">
-      <div className="flex justify-between items-center mb-4">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        {icon}
-      </div>
-      <p className="text-2xl font-bold mb-2">{value}</p>
-      <div
-        className={`flex items-center ${
-          trend === "up" ? "text-green-400" : "text-red-400"
-        }`}
-      >
-        {trend === "up" ? (
-          <ArrowUpRight size={20} />
-        ) : (
-          <ArrowDownRight size={20} />
-        )}
-        <span className="ml-1">2.5%</span>
+    <div className="flex h-screen bg-gray-100">
+      <Sidebar />
+      <div className="flex-1 overflow-auto">
+        <main className="p-8">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+            <SponsoredSection
+              title="Sponsored Events"
+              items={sponsoredEvents}
+              type="event"
+            />
+            <SponsoredSection
+              title="Sponsored Athletes"
+              items={sponsoredAthletes}
+              type="athlete"
+            />
+            <SponsoredSection
+              title="Sponsored Teams"
+              items={sponsoredTeams}
+              type="team"
+            />
+          </div>
+        </main>
       </div>
     </div>
   );

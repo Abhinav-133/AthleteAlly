@@ -22,7 +22,10 @@ import JobPortal from "./components/Athlete Dashboard/JobPortal";
 import LatestNews from "./components/Athlete Dashboard/LatestNews";
 import Sponsor from "./pages/Sponsor/Sponsor";
 import SponsorUpcomingEvents from "./pages/Sponsor/UpcomingEvents";
-import SponsorPastEvents from "./pages/Sponsor/PastEvents";
+import SponsorAthletes from "./pages/Sponsor/Athletes";
+import SponsorTeams from "./pages/Sponsor/Teams";
+import SponsorEngagement from "./pages/Sponsor/Engagement";
+
 const router = createBrowserRouter(
   createRoutesFromElements(
     <>
@@ -49,7 +52,9 @@ const router = createBrowserRouter(
         path="/sponsor/upcoming-events"
         element={<SponsorUpcomingEvents />}
       />
-      <Route path="/sponsor/past-events" element={<SponsorPastEvents />} />
+      <Route path="/sponsor/athletes" element={<SponsorAthletes />} />
+      <Route path="/sponsor/teams" element={<SponsorTeams />} />
+      <Route path="/sponsor/engagement" element={<SponsorEngagement />} />
     </>
   )
 );
