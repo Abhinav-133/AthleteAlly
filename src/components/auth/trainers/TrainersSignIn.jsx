@@ -6,6 +6,9 @@ import { Loader2, Mail, Lock } from 'lucide-react'
 import { Button, TextField, Typography, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
+import { auth, db } from '../../../firebaseConfig'; // Make sure to import your Firebase configuration
+import { signInWithEmailAndPassword } from 'firebase/auth'
+import { doc, getDoc } from 'firebase/firestore'
 
 const TrainersSignIn = () => {
   const [email, setEmail] = useState('')
@@ -20,12 +23,23 @@ const TrainersSignIn = () => {
     setError(null)
 
     try {
-      // Simulating sign-in process
-      await new Promise(resolve => setTimeout(resolve, 1500))
-      console.log('Signed in with:', { email, password })
-      navigate('/dashboard')
+      // Sign in with Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, email, password)
+      const user = userCredential.user
+
+      // Check if user exists in the athletes collection
+      const userDoc = await getDoc(doc(db, 'trainers', user.uid))
+
+      if (userDoc.exists()) {
+        console.log('User exists in trainers collection:', userDoc.data())
+        navigate('/athlete-dashboard') // Navigate to the dashboard
+      } else {
+        setError('User not found in trainers collection.')
+        console.log('User not found in trainers collection.')
+      }
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.')
+      console.error('Sign-in error:', err.message)
     } finally {
       setLoading(false)
     }
@@ -62,7 +76,6 @@ const TrainersSignIn = () => {
         <form onSubmit={handleSubmit} className="space-y-6">
           <div className="relative">
             <TextField
-              // label="Email"
               variant="outlined"
               placeholder="Enter your email"
               fullWidth
@@ -79,7 +92,6 @@ const TrainersSignIn = () => {
           </div>
           <div className="relative">
             <TextField
-              // label="Password"
               variant="outlined"
               type="password"
               placeholder="Enter your password"
@@ -122,11 +134,10 @@ const TrainersSignIn = () => {
           <Typography variant="body2">
             Don't have an account?{' '}
             <Link to="/trainer-signup">
-            <a href="/trainer-signup" className="text-blue-400 hover:underline">
-              Sign Up
-            </a>
+              <a href="/trainer-signup" className="text-blue-400 hover:underline">
+                Sign Up
+              </a>
             </Link>
-          
           </Typography>
           <Typography variant="body2">
             Forgot your password?{' '}
@@ -139,4 +150,5 @@ const TrainersSignIn = () => {
     </div>
   )
 }
-export default TrainersSignIn;
+
+export default TrainersSignIn

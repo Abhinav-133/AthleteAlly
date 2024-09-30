@@ -25,6 +25,10 @@ import SponsorUpcomingEvents from "./pages/Sponsor/UpcomingEvents";
 import SponsorAthletes from "./pages/Sponsor/Athletes";
 import SponsorTeams from "./pages/Sponsor/Teams";
 import SponsorEngagement from "./pages/Sponsor/Engagement";
+import TrainersPage from "./Trainer/Dashboard";
+import TrainerProfilePage from "./Trainer/TrainerProfile";
+import AthletesListPage from "./Trainer/atheletesl";
+import CommunityPage from "./Trainer/communitytrainer";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -55,6 +59,15 @@ const router = createBrowserRouter(
       <Route path="/sponsor/athletes" element={<SponsorAthletes />} />
       <Route path="/sponsor/teams" element={<SponsorTeams />} />
       <Route path="/sponsor/engagement" element={<SponsorEngagement />} />
+      <Route path="/trainers-dashboard" element={<TrainersPage/>}/>
+      <Route path="/trainers/athletes" element={<AthletesListPage/>}/>
+      <Route path="/trainers/sportsgear" element={<SportsGear/>}/>
+      <Route path="/trainers/tournaments" element={<Tournaments/>}/>
+      <Route path="/trainers/jobportal" element={<JobPortal/>}/>
+      <Route path="/trainers/latestnews" element={<LatestNews/>}/>
+      <Route path="/trainers/community" element={<CommunityPage/>}/>
+      <Route path="/trainers/profile" element={<TrainerProfilePage/>}/>
+
     </>
   )
 );

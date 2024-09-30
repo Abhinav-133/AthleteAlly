@@ -5,8 +5,11 @@ import { motion } from "framer-motion";
 import { Loader2, Mail, Lock, Phone, User, Calendar, Link } from "lucide-react";
 import { Button, TextField, Typography, Alert, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
+import { auth, db } from "../../../firebaseConfig"; // Ensure db is initialized in firebaseConfig
 
-const TrainersSignUp = () => {
+const TrainerSignUp = () => {
   const [step, setStep] = useState(1); // To track the form step
   const [formData, setFormData] = useState({
     name: "",
@@ -25,7 +28,7 @@ const TrainersSignUp = () => {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [photoPreview, setPhotoPreview] = useState('')
+  const [photoPreview, setPhotoPreview] = useState("");
   const navigate = useNavigate();
 
   const handleNext = (event) => {
@@ -53,13 +56,46 @@ const TrainersSignUp = () => {
     setError(null);
 
     try {
-      // Simulating sign-up process
-      await new Promise((resolve) => setTimeout(resolve, 1500));
-      console.log("Signed up with:", formData);
-      navigate("/dashboard");
+
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        formData.email,
+        formData.password
+      );
+
+      const user = userCredential.user;
+
+      await setDoc(doc(db, "trainers", user.uid), {
+        name: formData.name,
+        age: formData.age,
+        dob: formData.dob,
+        district: formData.district,
+        state: formData.state,
+        email: formData.email,
+        gender: formData.gender,
+        sport: formData.sport,
+        experience: formData.experience,
+        contactNo: formData.contactNo,
+        adharCard: formData.adharCard,
+        createdAt: new Date().toISOString(),
+      });
+
+      console.log("User signed up and details saved:", user);
+
+      navigate("/athlete-dashboard");
     } catch (err) {
-      setError("Failed to sign up. Please check your details.");
-    } finally {
+      if (err.code === 'auth/email-already-in-use') {
+        setError('This email is already registered.');
+      } else if (err.code === 'auth/weak-password') {
+        setError('Password is too weak. Please use a stronger password.');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Invalid email format.');
+      } else {
+        setError('Failed to sign up. Please check your details.');
+      }
+      console.error("Sign-up or Firestore error:", err.message);
+    }
+     finally {
       setLoading(false);
     }
   };
@@ -144,7 +180,6 @@ const TrainersSignUp = () => {
               InputLabelProps={{ shrink: true }}
             />
             <TextField
-              label="District"
               name="district"
               variant="outlined"
               placeholder="Enter your district"
@@ -154,7 +189,6 @@ const TrainersSignUp = () => {
               className="bg-gray-700 text-white rounded-lg"
             />
             <TextField
-              label="State"
               name="state"
               variant="outlined"
               placeholder="Enter your state"
@@ -269,7 +303,6 @@ const TrainersSignUp = () => {
               className="bg-gray-700 text-white rounded-lg"
             />
             <TextField
-              label="Aadhar Card Number"
               name="adharCard"
               variant="outlined"
               placeholder="Enter your Aadhar Card number"
@@ -278,14 +311,14 @@ const TrainersSignUp = () => {
               onChange={handleChange}
               className="bg-gray-700 text-white rounded-lg"
             />
-             {/* Add Photo Upload */}
-             <div className="flex flex-col items-center space-y-4">
+            {/* Add Photo Upload */}
+            <div className="flex flex-col items-center space-y-4">
               <Button
                 variant="outlined"
                 component="label"
                 className="w-full py-3 text-lg font-semibold border-dashed border-gray-500 text-gray-400"
               >
-                {formData.photo ? 'Change Photo' : 'Upload Photo'}
+                {formData.photo ? "Change Photo" : "Upload Photo"}
                 <input
                   type="file"
                   name="photo"
@@ -326,4 +359,4 @@ const TrainersSignUp = () => {
   );
 };
 
-export default TrainersSignUp;
+export default TrainerSignUp;
