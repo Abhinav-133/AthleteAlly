@@ -7,7 +7,7 @@ import { Button, TextField, Typography, Alert, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../../firebaseConfig"; // Ensure db is initialized in firebaseConfig
+import { auth, db } from "../../../firebaseConfig";
 
 const AthleteSignUp = () => {
   const [step, setStep] = useState(1); // To track the form step
@@ -28,7 +28,6 @@ const AthleteSignUp = () => {
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [photoPreview, setPhotoPreview] = useState("");
   const navigate = useNavigate();
 
   const handleNext = (event) => {
@@ -85,18 +84,17 @@ const AthleteSignUp = () => {
 
       navigate("/athlete-dashboard");
     } catch (err) {
-      if (err.code === 'auth/email-already-in-use') {
-        setError('This email is already registered.');
-      } else if (err.code === 'auth/weak-password') {
-        setError('Password is too weak. Please use a stronger password.');
-      } else if (err.code === 'auth/invalid-email') {
-        setError('Invalid email format.');
+      if (err.code === "auth/email-already-in-use") {
+        setError("This email is already registered.");
+      } else if (err.code === "auth/weak-password") {
+        setError("Password is too weak. Please use a stronger password.");
+      } else if (err.code === "auth/invalid-email") {
+        setError("Invalid email format.");
       } else {
-        setError('Failed to sign up. Please check your details.');
+        setError("Failed to sign up. Please check your details.");
       }
       console.error("Sign-up or Firestore error:", err.message);
-    }
-     finally {
+    } finally {
       setLoading(false);
     }
   };
@@ -312,30 +310,6 @@ const AthleteSignUp = () => {
               onChange={handleChange}
               className="bg-gray-700 text-white rounded-lg"
             />
-            {/* Add Photo Upload */}
-            <div className="flex flex-col items-center space-y-4">
-              <Button
-                variant="outlined"
-                component="label"
-                className="w-full py-3 text-lg font-semibold border-dashed border-gray-500 text-gray-400"
-              >
-                {formData.photo ? "Change Photo" : "Upload Photo"}
-                <input
-                  type="file"
-                  name="photo"
-                  hidden
-                  accept="image/*"
-                  onChange={handleChange}
-                />
-              </Button>
-              {photoPreview && (
-                <img
-                  src={photoPreview}
-                  alt="Preview"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
-              )}
-            </div>
             <Button
               type="submit"
               variant="contained"
