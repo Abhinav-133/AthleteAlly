@@ -4,6 +4,7 @@ import AthleteSignIn from "./components/auth/athlete/AthleteSignin";
 import AthleteSignUp from "./components/auth/athlete/AthleteSignup";
 import TrainersSignIn from "./components/auth/trainers/TrainersSignIn";
 import TrainersSignUp from "./components/auth/trainers/TrainersSignUp";
+import SponsorSignIn from "./components/auth/sponsors/SponsorSignIn";
 
 import HomePage from "./Homepage";
 import {
@@ -29,6 +30,7 @@ import TrainersPage from "./Trainer/Dashboard";
 import TrainerProfilePage from "./Trainer/TrainerProfile";
 import AthletesListPage from "./Trainer/atheletesl";
 import CommunityPage from "./Trainer/communitytrainer";
+import SponsorSignup from "./components/auth/sponsors/SponsorSignUp";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -67,6 +69,8 @@ const router = createBrowserRouter(
       <Route path="/trainers/latestnews" element={<LatestNews/>}/>
       <Route path="/trainers/community" element={<CommunityPage/>}/>
       <Route path="/trainers/profile" element={<TrainerProfilePage/>}/>
+      <Route  path="/sponsors-login" element={<SponsorSignIn/>}/>
+      <Route path="/sponsors-signup" element={<SponsorSignup/>}/>
 
     </>
   )

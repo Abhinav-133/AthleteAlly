@@ -311,30 +311,6 @@ const TrainerSignUp = () => {
               onChange={handleChange}
               className="bg-gray-700 text-white rounded-lg"
             />
-            {/* Add Photo Upload */}
-            <div className="flex flex-col items-center space-y-4">
-              <Button
-                variant="outlined"
-                component="label"
-                className="w-full py-3 text-lg font-semibold border-dashed border-gray-500 text-gray-400"
-              >
-                {formData.photo ? "Change Photo" : "Upload Photo"}
-                <input
-                  type="file"
-                  name="photo"
-                  hidden
-                  accept="image/*"
-                  onChange={handleChange}
-                />
-              </Button>
-              {photoPreview && (
-                <img
-                  src={photoPreview}
-                  alt="Preview"
-                  className="w-24 h-24 rounded-full object-cover"
-                />
-              )}
-            </div>
             <Button
               type="submit"
               variant="contained"

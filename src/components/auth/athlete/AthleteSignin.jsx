@@ -139,12 +139,7 @@ const AthleteSignIn = () => {
               </a>
             </Link>
           </Typography>
-          <Typography variant="body2">
-            Forgot your password?{' '}
-            <a href="/reset-password" className="text-blue-400 hover:underline">
-              Reset here
-            </a>
-          </Typography>
+
         </motion.div>
       </motion.div>
     </div>

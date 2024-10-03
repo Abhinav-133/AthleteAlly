@@ -93,6 +93,7 @@ export default function RegistrationOptions() {
             title="Sponsor"
             description="Support talented athletes, increase brand visibility, and contribute to sports development."
             buttonText="Register as sponsor"
+            link={"/sponsors-login"}
           />
         </motion.div>
       </motion.div>
