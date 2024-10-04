@@ -6,6 +6,7 @@ import NFTMarketplace from "views/admin/marketplace";
 import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
+import Tournaments from "views/admin/tournaments";
 
 // Auth Imports
 import SignIn from "views/auth/SignIn";
@@ -18,6 +19,8 @@ import {
   MdPerson,
   MdLock,
 } from "react-icons/md";
+
+import { TbTournament } from "react-icons/tb";
 
 const routes = [
   {
@@ -62,6 +65,13 @@ const routes = [
     path: "rtl",
     icon: <MdHome className="h-6 w-6" />,
     component: <RTLDefault />,
+  },
+  {
+    name: "Tournaments",
+    layout: "/admin",
+    icon: <TbTournament className="h-6 w-6" />,
+    path: "tournaments",
+    component: <Tournaments />,
   },
 ];
 export default routes;
