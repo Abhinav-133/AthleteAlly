@@ -5,7 +5,6 @@ import {
   DollarSignIcon,
   UsersIcon,
   ClockIcon,
-  MessageCircle,
 } from "lucide-react";
 
 import Sidebar from "./Sidebar";
