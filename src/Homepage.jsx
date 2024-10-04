@@ -137,45 +137,6 @@ export default function HomePage() {
   const navbarBackground =
     scrollPosition > 50 ? "bg-gray-900/60 backdrop-blur-xl" : "bg-transparent";
 
-  const featuredAthletes = [
-    {
-      name: "John Doe",
-      sport: "Swimming",
-      image:
-        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
-    },
-    {
-      name: "Jane Smith",
-      sport: "Track and Field",
-      image:
-        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
-    },
-    {
-      name: "Mike Johnson",
-      sport: "Basketball",
-      image:
-        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
-    },
-    {
-      name: "Sarah Williams",
-      sport: "Tennis",
-      image:
-        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
-    },
-    {
-      name: "Alex Brown",
-      sport: "Soccer",
-      image:
-        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
-    },
-    {
-      name: "Emily Davis",
-      sport: "Gymnastics",
-      image:
-        "https://imgs.search.brave.com/xQ1k9MGTGpB7FIuPI-JXzM73DTUPIyYXEPlJJKT6zD8/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly93YWxs/cGFwZXJzLmNvbS9p/bWFnZXMvZmVhdHVy/ZWQvdmlyYXQta29o/bGktcGljdHVyZXMt/eWM4ZGZwY2pzc3Az/czRzZS5qcGc",
-    },
-  ];
-
   return (
     <div className="min-h-screen bg-black text-gray-200">
       <ParticleBackground />
@@ -355,20 +316,21 @@ export default function HomePage() {
             <div className="md:w-100">
               {" "}
               <p className="text-lg mb-4 text-gray-300">
-                athleteally is dedicated to supporting athletes at all levels.We
-                provide a platform for sports enthusiasts to connect, stay
-                informed, and access top-quality gear. Our mission is to foster
-                a global community of athletes, empowering them to achieve their
-                goals and push their limits. athleteally is dedicated to
-                supporting athletes at all levels. We provide a platform for
-                sports enthusiasts to connect, stay informed, and access
-                top-quality gear. Our mission is to foster a global community of
-                athletes, empowering them to achieve their goals and push their
-                limits. // athleteally is dedicated to supporting athletes at
-                all levels. We provide a platform for sports enthusiasts to
-                connect, stay informed, and access top-quality gear. Our mission
-                is to foster a global community of athletes, empowering them to
-                achieve their goals and push their limits.
+                Welcome to our platform, a dedicated space for aspiring athletes
+                and sports enthusiasts. We believe in empowering every
+                sportsperson, especially those who lack the resources or
+                recognition they deserve. Our mission is to connect athletes
+                with valuable opportunities through innovative technology,
+                ensuring that talent is nurtured and showcased. Our platform
+                offers unique features, including skill assessments through
+                video analysis, enabling athletes to receive personalized
+                feedback and track their progress over time. We strive to create
+                a supportive community where athletes can connect, share
+                experiences, and inspire one another. By leveraging AI and
+                machine learning, we provide insights that help athletes enhance
+                their performance, regardless of their background. Join us on
+                this journey to redefine sports training and create equal
+                opportunities for all athletes!
               </p>
             </div>
           </div>
@@ -409,18 +371,46 @@ export default function HomePage() {
           </div>
         </div>
       </motion.section>
-      {/* Featured Athletes */}
+      {/* Connected Athletes, Trainers, and Sponsors */}
       <motion.section
-        id="athletes"
+        id="community"
         className="py-16 bg-gray-900 relative overflow-hidden"
         {...fadeIn}
       >
         <div className="container mx-auto px-4 mb-8">
           <h2 className="text-3xl font-bold mb-8 text-center text-gray-100">
-            Featured Athletes
+            Our Community
           </h2>
         </div>
-        <FeaturedAthleteMarquee athletes={featuredAthletes} />
+        <div className="container mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gray-800 rounded-lg shadow-lg p-6 text-center"
+          >
+            <h3 className="text-5xl font-bold text-gray-100">500+</h3>
+            <p className="text-gray-300 text-xl mt-2">Athletes Connected</p>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gray-800 rounded-lg shadow-lg p-6 text-center"
+          >
+            <h3 className="text-5xl font-bold text-gray-100">200+</h3>
+            <p className="text-gray-300 text-xl mt-2">Trainers Available</p>
+          </motion.div>
+
+          <motion.div
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            className="bg-gray-800 rounded-lg shadow-lg p-6 text-center"
+          >
+            <h3 className="text-5xl font-bold text-gray-100">100+</h3>
+            <p className="text-gray-300 text-xl mt-2">Sponsors Engaged</p>
+          </motion.div>
+        </div>
+
         <div className="absolute top-0 right-0 w-64 h-64 bg-gray-800 rounded-full -mr-32 -mt-32 opacity-10"></div>
         <div className="absolute bottom-0 left-0 w-48 h-48 bg-gray-800 rounded-full -ml-24 -mb-24 opacity-10"></div>
       </motion.section>
@@ -460,7 +450,7 @@ export default function HomePage() {
         </div>
       </motion.section>
       {/* Sports Gear */}
-      <motion.section id="gear" className="py-16 bg-gray-900" {...fadeIn}>
+      {/* <motion.section id="gear" className="py-16 bg-gray-900" {...fadeIn}>
         <div className="container mx-auto px-4">
           <h2 className="text-3xl font-bold mb-8 text-center text-gray-100">
             Sports Gear
@@ -496,7 +486,8 @@ export default function HomePage() {
             ))}
           </div>
         </div>
-      </motion.section>
+      </motion.section> */}
+      
       {/* Upcoming Events */}
       <motion.section id="events" className="py-16 bg-black" {...fadeIn}>
         <div className="container mx-auto px-4">

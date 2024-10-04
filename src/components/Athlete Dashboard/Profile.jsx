@@ -1,38 +1,88 @@
 'use client'
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
 import { User, Mail, Phone, MapPin, Calendar, Dumbbell, Award, Edit2, Save, X } from 'lucide-react'
-
-const athleteData = {
-  name: "John Doe",
-  email: "john.doe@example.com",
-  phone: "1234567890",
-  dob: "1990-01-01",
-  address: "123 Sports St, Athleteville, AT 12345",
-  sport: "Swimming",
-  experience: 10,
-  achievements: "Olympic Gold Medalist 2020, World Champion 2019",
-  bio: "Passionate swimmer with a decade of competitive experience. Dedicated to pushing the boundaries of human potential in aquatics.",
-}
+import { useUser } from '../../UserContext'
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore"
 
 export default function AthleteProfile() {
   const [isEditing, setIsEditing] = useState(false)
-  const [formData, setFormData] = useState(athleteData)
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    dob: "",
+    state: "",
+    sport: "",
+    achievements: "",
+    bio: "",
+    experience: "",
+    gender: ""
+  })
+  const { userDetails } = useUser()
+  const db = getFirestore(); // Initialize Firestore here
+
+  // Fetch user data when `userDetails` is updated
+  useEffect(() => {
+    const getUserData = async () => {
+      if (userDetails?.uid) {
+        const data = await fetchUserData(userDetails.uid, db);
+        setFormData(data); // Set fetched data directly into formData
+      }
+    };
+    getUserData();
+  }, [userDetails, db]);
 
   const handleChange = (e) => {
     const { name, value } = e.target
     setFormData(prev => ({ ...prev, [name]: value }))
   }
 
-  const onSubmit = (e) => {
+  const onSubmit = async (e) => {
     e.preventDefault()
-    console.log(formData)
     setIsEditing(false)
-    // Here you would typically send the updated data to your backend
+
+    // Update the data in Firestore
+    try {
+      const userDocRef = doc(db, "athletes", userDetails.uid);
+      await updateDoc(userDocRef, formData);
+      console.log("User data updated successfully!");
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
   }
 
+  // Fetch user data from Firestore
+  const fetchUserData = async (userId, db) => {
+    try {
+      const userDocRef = doc(db, "athletes", userId);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        return userData;
+      } else {
+        console.log("No such user document found!");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
   const MotionCard = motion.div
+  
+  // Define the order of fields to be displayed
+  const displayOrder = [
+    'name',
+    'email',
+    'phone', // Added phone for display
+    'dob',
+    'sport',
+    'experience',
+    'gender',
+    'state',
+    'bio'
+  ];
 
   return (
     <div className="min-h-screen bg-white text-white p-8">
@@ -51,8 +101,8 @@ export default function AthleteProfile() {
           {isEditing ? (
             <form onSubmit={onSubmit} className="space-y-6">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {Object.keys(athleteData).map((key) => (
-                  <div key={key} className={`form-group`}>
+                {displayOrder.map((key) => (
+                  <div key={key} className="form-group">
                     <label className="block text-sm font-medium mb-1">{key.charAt(0).toUpperCase() + key.slice(1)}</label>
                     <input
                       name={key}
@@ -66,34 +116,39 @@ export default function AthleteProfile() {
               </div>
               <div className="flex justify-end space-x-4">
                 <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-                  <Save className="mr-2 h-4 w-4" /> Save Changes
+                   Save Changes
                 </button>
                 <button type="button" className="border border-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded" onClick={() => setIsEditing(false)}>
-                  <X className="mr-2 h-4 w-4" /> Cancel
+                   Cancel
                 </button>
               </div>
             </form>
           ) : (
             <div className="space-y-4">
-              {Object.entries(formData).map(([key, value]) => (
+              {displayOrder.map((key) => (
                 <div key={key} className="flex items-center">
-                  <span className={`mr-3 h-4 w-4 text-blue-400`}>
+                  <span className="mr-3 h-4 w-4 text-blue-400">
                     {key === 'name' && <User />}
                     {key === 'email' && <Mail />}
                     {key === 'phone' && <Phone />}
-                    {key === 'address' && <MapPin />}
                     {key === 'dob' && <Calendar />}
+                    {key === 'state' && <MapPin />}
                     {key === 'sport' && <Dumbbell />}
-                    {key === 'achievements' && <Award />}
+                    {key === 'experience' && <Dumbbell />}
+                    {key === 'gender' && <User />}
+                    {key === 'bio' && <Award />}
                   </span>
-                  <span className="ml-2">{value}</span>
+                  <span className="ml-2">
+                    <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {formData[key]}
+                  </span>
                 </div>
               ))}
             </div>
           )}
+          <br />
           {!isEditing && (
             <button type="button" className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded" onClick={() => setIsEditing(true)}>
-              <Edit2 className="mr-2 h-4 w-4" /> Edit Profile
+               Edit Profile
             </button>
           )}
         </MotionCard>
@@ -108,22 +163,26 @@ export default function AthleteProfile() {
           <br />
           <div className="flex justify-center mb-4">
             <div className="w-32 h-32 bg-gray-600 rounded-full flex items-center justify-center">
-              <span className="text-3xl">{athleteData.name.split(' ').map(n => n[0]).join('')}</span>
+              <span className="text-3xl">{formData.name.split(' ').map(n => n[0]).join('')}</span>
             </div>
           </div>
           <div className="space-y-4">
-            {Object.entries(athleteData).map(([key, value]) => (
+            {displayOrder.map((key) => (
               <div key={key} className="flex items-center">
-                <span className={`mr-3 h-4 w-4 text-blue-400`}>
+                <span className="mr-3 h-4 w-4 text-blue-400">
                   {key === 'name' && <User />}
                   {key === 'email' && <Mail />}
                   {key === 'phone' && <Phone />}
-                  {key === 'address' && <MapPin />}
                   {key === 'dob' && <Calendar />}
+                  {key === 'state' && <MapPin />}
                   {key === 'sport' && <Dumbbell />}
-                  {key === 'achievements' && <Award />}
+                  {key === 'experience' && <Dumbbell />}
+                  {key === 'gender' && <User />}
+                  {key === 'bio' && <Award />}
                 </span>
-                <span className="ml-2">{value}</span>
+                <span className="ml-2">
+                  <strong>{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {formData[key]}
+                </span>
               </div>
             ))}
           </div>
