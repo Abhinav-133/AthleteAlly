@@ -8,34 +8,26 @@ import {
   ChevronDown,
   Menu,
   User,
-  ShoppingBag,
   Trophy,
-  Users,
   Dumbbell,
   Apple,
   X,
+  LogOut,
 } from "lucide-react";
-import { Outlet, Link } from "react-router-dom";
-import { useUser } from "../../UserContext";
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import { getFirestore, doc, getDoc } from "firebase/firestore";
 
 // Sidebar Component
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { icon: User, label: "My Profile", link: "/athlete-dashboard/profile" },
-    // {
-    //   icon: ShoppingBag,
-    //   label: "Sports Gear",
-    //   link: "/athlete-dashboard/sportsgear",
-    // },
     {
       icon: Trophy,
       label: "Tournaments",
       link: "/athlete-dashboard/tournaments",
     },
-    // { icon: Users, label: "Job Portals", link: "/athlete-dashboard/jobs" },
     { icon: Dumbbell, label: "Latest News", link: "/athlete-dashboard/news" },
-    { icon: Apple, label: "Community" },
+    { icon: Apple, label: "Community", link: "/athlete-dashboard/community" },
   ];
 
   return (
@@ -81,7 +73,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 // Navbar Component
-const Navbar = ({ userName, userImage }) => {
+const Navbar = ({ userName, userImage, handleLogout }) => {
   return (
     <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
       <div className="flex items-center">
@@ -93,21 +85,27 @@ const Navbar = ({ userName, userImage }) => {
         />
       </div>
       <div className="flex items-center space-x-4">
-        <button className="relative p-2 rounded-full hover:bg-gray-800 transition-colors" aria-label="Notifications">
+        <button
+          className="relative p-2 rounded-full hover:bg-gray-800 transition-colors"
+          aria-label="Notifications"
+        >
           <Bell size={24} />
           <span className="absolute top-0 right-0 bg-red-500 rounded-full w-4 h-4 text-xs flex items-center justify-center">
             3
           </span>
         </button>
         <div className="flex items-center">
-          {/* <img
-            src={userImage || "/placeholder.svg?height=32&width=32"}
-            alt="User"
-            className="w-8 h-8 rounded-full mr-2"
-          /> */}
           <span className="mr-2">{userName || "User"}</span>
           <ChevronDown size={16} />
         </div>
+        {/* Logout Button */}
+        <button
+          onClick={handleLogout}
+          className="p-2 rounded-full hover:bg-gray-800 transition-colors"
+          aria-label="Logout"
+        >
+          <LogOut size={24} />
+        </button>
       </div>
     </div>
   );
@@ -122,7 +120,7 @@ const fetchUserData = async (userId, db) => {
     if (userDoc.exists()) {
       const userData = userDoc.data();
       console.log("User data:", userData);
-      return userData; 
+      return userData;
     } else {
       console.log("No such user document found!");
     }
@@ -134,23 +132,37 @@ const fetchUserData = async (userId, db) => {
 // Main Dashboard Component
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-  const { userDetails } = useUser();
   const [userData, setUserData] = useState(null);
-  const db = getFirestore(); // Initialize Firestore here
+  const db = getFirestore(); // Initialize Firestore
+  const navigate = useNavigate(); // To redirect the user
 
   useEffect(() => {
     const getUserData = async () => {
-      if (userDetails?.uid) {
-        const data = await fetchUserData(userDetails.uid, db);
-        setUserData(data);
+      // Retrieve userUid from sessionStorage
+      const userUid = sessionStorage.getItem("userUid");
+
+      if (!userUid) {
+        // Redirect to login page if no userUid is found
+        navigate("/athlete-login");
+        return;
       }
+
+      const data = await fetchUserData(userUid, db);
+      setUserData(data);
     };
 
     getUserData();
-  }, [userDetails, db]);
+  }, [db, navigate]);
 
   const toggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
+  };
+
+  const handleLogout = () => {
+    // Clear sessionStorage
+    sessionStorage.clear();
+    // Redirect to login page
+    navigate("/athlete-login");
   };
 
   return (
@@ -164,6 +176,7 @@ export default function Dashboard() {
         <Navbar
           userName={userData?.name || "User"} // Display the actual name coming from userData
           userImage={userData?.imageUrl} // Update this if the user data contains an image URL
+          handleLogout={handleLogout} // Pass the logout handler to Navbar
         />
         <Outlet />
       </div>

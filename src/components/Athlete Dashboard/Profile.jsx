@@ -2,8 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { motion } from 'framer-motion'
-import { User, Mail, Phone, MapPin, Calendar, Dumbbell, Award, Edit2, Save, X } from 'lucide-react'
-import { useUser } from '../../UserContext'
+import { User, Mail, Phone, MapPin, Calendar, Dumbbell, Award } from 'lucide-react'
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore"
 
 export default function AthleteProfile() {
@@ -20,19 +19,20 @@ export default function AthleteProfile() {
     experience: "",
     gender: ""
   })
-  const { userDetails } = useUser()
   const db = getFirestore(); // Initialize Firestore here
 
-  // Fetch user data when `userDetails` is updated
+  // Fetch user data when component mounts
   useEffect(() => {
     const getUserData = async () => {
-      if (userDetails?.uid) {
-        const data = await fetchUserData(userDetails.uid, db);
+      // Retrieve userUid from sessionStorage
+      const userUid = sessionStorage.getItem("userUid");
+      if (userUid) {
+        const data = await fetchUserData(userUid, db);
         setFormData(data); // Set fetched data directly into formData
       }
     };
     getUserData();
-  }, [userDetails, db]);
+  }, [db]);
 
   const handleChange = (e) => {
     const { name, value } = e.target
@@ -45,7 +45,8 @@ export default function AthleteProfile() {
 
     // Update the data in Firestore
     try {
-      const userDocRef = doc(db, "athletes", userDetails.uid);
+      const userUid = sessionStorage.getItem("userUid");
+      const userDocRef = doc(db, "athletes", userUid);
       await updateDoc(userDocRef, formData);
       console.log("User data updated successfully!");
     } catch (error) {
@@ -75,7 +76,7 @@ export default function AthleteProfile() {
   const displayOrder = [
     'name',
     'email',
-    'phone', // Added phone for display
+    'phone',
     'dob',
     'sport',
     'experience',
@@ -116,10 +117,10 @@ export default function AthleteProfile() {
               </div>
               <div className="flex justify-end space-x-4">
                 <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded">
-                   Save Changes
+                  Save Changes
                 </button>
                 <button type="button" className="border border-gray-600 hover:bg-gray-700 text-white py-2 px-4 rounded" onClick={() => setIsEditing(false)}>
-                   Cancel
+                  Cancel
                 </button>
               </div>
             </form>
@@ -148,7 +149,7 @@ export default function AthleteProfile() {
           <br />
           {!isEditing && (
             <button type="button" className="mt-4 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded" onClick={() => setIsEditing(true)}>
-               Edit Profile
+              Edit Profile
             </button>
           )}
         </MotionCard>

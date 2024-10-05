@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2, Mail, Lock } from 'lucide-react'
@@ -10,16 +8,15 @@ import { auth, db } from '../../../firebaseConfig'; // Make sure to import your 
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
 import { useUser } from '../../../UserContext'
-import { useEffect } from 'react'
+
 
 const AthleteSignIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const { UserDetails,setUserDetails } = useUser();
+  const { setUserDetails } = useUser()
   const navigate = useNavigate()
-  
 
   const handleSubmit = async (event) => {
     event.preventDefault()
@@ -36,9 +33,11 @@ const AthleteSignIn = () => {
 
       if (userDoc.exists()) {
         console.log('User exists in athletes collection:', userDoc.data())
-        setUserDetails({ uid: user.uid, });
-        // console.log(UserDetails);
-
+        
+        // Store the user UID in sessionStorage
+        sessionStorage.setItem('userUid', user.uid)
+        
+        setUserDetails({ uid: user.uid, ...userDoc.data() })
         navigate('/athlete-dashboard') // Navigate to the dashboard
       } else {
         setError('User not found in athletes collection.')
