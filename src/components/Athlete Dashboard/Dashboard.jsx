@@ -28,6 +28,12 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     },
     { icon: Dumbbell, label: "Latest News", link: "/athlete-dashboard/news" },
     { icon: Apple, label: "Community", link: "/athlete-dashboard/community" },
+    {
+      icon: Trophy,
+      label: "Your Tournaments",
+      link: "/athlete-dashboard/tournaments",
+    },
+    { icon: Dumbbell, label: "Trainers", link: "/athlete-dashboard/news" },
   ];
 
   return (
@@ -162,7 +168,7 @@ export default function Dashboard() {
     // Clear sessionStorage
     sessionStorage.clear();
     // Redirect to login page
-    navigate("/athlete-login");
+    navigate("/");
   };
 
   return (
