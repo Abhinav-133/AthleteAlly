@@ -1,7 +1,7 @@
 import React from "react";
 import { CalendarDays, MapPin, Trophy, Users, ChevronDown } from "lucide-react";
 
-export default function Component() {
+export default function SingleTournament() {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-white to-gray-100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden transform transition-all hover:scale-[1.02] duration-300">
