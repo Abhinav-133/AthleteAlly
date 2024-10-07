@@ -8,9 +8,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { icon: User, label: "My Profile",link:"/trainers/profile" },
     { icon: UserCircle, label: "Athlete Profile",link:"/trainers/athletes" },
-    { icon: ShoppingBag, label: "Sports Gear",link:"/trainers/sportsgear" },
+    // { icon: ShoppingBag, label: "Sports Gear",link:"/trainers/sportsgear" },
     { icon: Trophy, label: "Tournaments",link:"/trainers/tournaments" },
-    { icon: Users, label: "Job Portals",link:"/trainers/jobportal" },
+    // { icon: Users, label: "Job Portals",link:"/trainers/jobportal" },
     { icon: Dumbbell, label: "Latest News",link:"/trainers/latestnews" },
     { icon: Apple, label: "Community",link:"/trainers/community" },
   ]

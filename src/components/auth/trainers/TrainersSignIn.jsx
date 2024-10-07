@@ -1,5 +1,3 @@
-'use client'
-
 import React, { useState } from 'react'
 import { motion } from 'framer-motion'
 import { Loader2, Mail, Lock } from 'lucide-react'
@@ -9,12 +7,15 @@ import { Link } from 'react-router-dom'
 import { auth, db } from '../../../firebaseConfig'; // Make sure to import your Firebase configuration
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
+import { useUser } from '../../../UserContext'
+
 
 const TrainersSignIn = () => {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
+  const { setUserDetails } = useUser()
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
@@ -32,10 +33,15 @@ const TrainersSignIn = () => {
 
       if (userDoc.exists()) {
         console.log('User exists in trainers collection:', userDoc.data())
-        navigate('/athlete-dashboard') // Navigate to the dashboard
+        
+        // Store the user UID in sessionStorage
+        sessionStorage.setItem('userUid', user.uid)
+        
+        setUserDetails({ uid: user.uid, ...userDoc.data() })
+        navigate('/trainers-dashboard') // Navigate to the dashboard
       } else {
-        setError('User not found in trainers collection.')
-        console.log('User not found in trainers collection.')
+        setError('User not found')
+        console.log('User not found in athletes collection.')
       }
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.')
@@ -139,7 +145,7 @@ const TrainersSignIn = () => {
               </a>
             </Link>
           </Typography>
-         
+
         </motion.div>
       </motion.div>
     </div>

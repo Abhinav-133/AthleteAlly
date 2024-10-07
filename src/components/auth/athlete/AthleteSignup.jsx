@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Loader2, Mail, Lock, Phone, User, Calendar, MapPin, FileText, BadgeCheck } from "lucide-react"; // Add appropriate icons
 import { Button, TextField, Typography, Alert, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { createUserWithEmailAndPassword,sendEmailVerification } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebaseConfig";
 
@@ -54,7 +54,7 @@ const AthleteSignUp = () => {
     event.preventDefault();
     setLoading(true);
     setError(null);
-
+  
     try {
       // Create user with Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
@@ -62,9 +62,13 @@ const AthleteSignUp = () => {
         formData.email,
         formData.password
       );
-
+  
       const user = userCredential.user;
-
+  
+      // Send email verification
+      await sendEmailVerification(user);
+      alert('Verification email sent. Please check your inbox.');
+  
       // Save user details to Firestore using the user's UID as the document ID
       await setDoc(doc(db, "athletes", user.uid), {
         name: formData.name,
@@ -81,10 +85,12 @@ const AthleteSignUp = () => {
         bio: formData.bio, // Save bio in Firestore
         createdAt: new Date().toISOString(),
       });
-
+  
       console.log("User signed up and details saved:", user);
-
-      navigate("/athlete-login");
+  
+      // Optionally navigate to a verification-pending page
+      navigate("/athlete-login"); 
+  
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("This email is already registered.");
@@ -100,7 +106,6 @@ const AthleteSignUp = () => {
       setLoading(false);
     }
   };
-
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
