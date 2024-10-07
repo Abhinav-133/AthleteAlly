@@ -32,6 +32,7 @@ import AthletesListPage from "./Trainer/atheletesl";
 import CommunityPage from "./Trainer/communitytrainer";
 import SponsorSignup from "./components/auth/sponsors/SponsorSignUp";
 import { UserProvider } from "./UserContext";
+import Tournament from "./Trainer/Tournaments";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -65,7 +66,7 @@ const router = createBrowserRouter(
       <Route path="/trainers-dashboard" element={<TrainersPage />} />
       <Route path="/trainers/athletes" element={<AthletesListPage />} />
       <Route path="/trainers/sportsgear" element={<SportsGear />} />
-      <Route path="/trainers/tournaments" element={<Tournaments />} />
+      <Route path="/trainers/tournaments" element={<Tournament />} />
       <Route path="/trainers/jobportal" element={<JobPortal />} />
       <Route path="/trainers/latestnews" element={<LatestNews />} />
       <Route path="/trainers/community" element={<CommunityPage />} />
