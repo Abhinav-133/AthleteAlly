@@ -6,13 +6,6 @@ import { Search, ChevronDown, ExternalLink, Calendar } from "lucide-react";
 import { Link } from "react-router-dom";
 
 const categories = [
-  "All",
-  "Cricket",
-  "Badminton",
-  "Athletics",
-  "Hockey",
-  "Boxing",
-  "Tennis",
 ];
 
 const NewsCard = ({ article }) => (
@@ -31,9 +24,6 @@ const NewsCard = ({ article }) => (
     </div>
     <div className="flex-grow text-white/80">{article.description}</div>
     <div className="flex justify-between items-center mt-4">
-      <span className="bg-orange-500 text-white px-2 py-1 rounded">
-        {article.category}
-      </span>
       <button className="text-blue-400 hover:text-blue-300 flex items-center">
         <Link
           to={article.url}
