@@ -41,6 +41,7 @@ const router = createBrowserRouter(
       <Route path="/" element={<Navigate to="/home" />} />
       <Route path="/home" element={<HomePage />} />
       <Route path="/register-options" element={<RegistrationOptions />} />
+      {/* Athletes */}
       <Route path="/athlete-login" element={<AthleteSignIn />} />
       <Route path="/athlete-signup" element={<AthleteSignUp />} />
       <Route path="/athlete-dashboard" element={<Dashboard />}>
@@ -54,8 +55,30 @@ const router = createBrowserRouter(
         <Route path="/athlete-dashboard/jobs" element={<JobPortal />} />
         <Route path="/athlete-dashboard/news" element={<LatestNews />} />
       </Route>
+
+      {/* Trainers */}
       <Route path="/trainer-login" element={<TrainersSignIn />} />
       <Route path="/trainer-signup" element={<TrainersSignUp />} />
+      <Route path="/trainers-dashboard" element={<TrainersPage />}>
+        <Route
+          path="/trainers-dashboard/athletes"
+          element={<AthletesListPage />}
+        />
+        <Route
+          path="/trainers-dashboard/tournaments"
+          element={<Tournaments />}
+        />
+        <Route
+          path="/trainers-dashboard/community"
+          element={<CommunityPage />}
+        />
+        <Route
+          path="/trainers-dashboard/profile"
+          element={<TrainerProfilePage />}
+        />
+      </Route>
+
+      {/* Sponsors */}
       <Route path="/sponsor" element={<Sponsor />} />
       <Route
         path="/sponsor/upcoming-events"
@@ -64,14 +87,6 @@ const router = createBrowserRouter(
       <Route path="/sponsor/athletes" element={<SponsorAthletes />} />
       <Route path="/sponsor/teams" element={<SponsorTeams />} />
       <Route path="/sponsor/engagement" element={<SponsorEngagement />} />
-      <Route path="/trainers-dashboard" element={<TrainersPage />} />
-      <Route path="/trainers/athletes" element={<AthletesListPage />} />
-      <Route path="/trainers/sportsgear" element={<SportsGear />} />
-      <Route path="/trainers/tournaments" element={<Tournament />} />
-      <Route path="/trainers/jobportal" element={<JobPortal />} />
-      <Route path="/trainers/latestnews" element={<LatestNews />} />
-      <Route path="/trainers/community" element={<CommunityPage />} />
-      <Route path="/trainers/profile" element={<TrainerProfilePage />} />
       <Route path="/sponsors-login" element={<SponsorSignIn />} />
       <Route path="/sponsors-signup" element={<SponsorSignup />} />
     </>
