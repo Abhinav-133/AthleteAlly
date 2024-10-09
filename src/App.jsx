@@ -31,7 +31,6 @@ import TrainerProfilePage from "./Trainer/TrainerProfile";
 import AthletesListPage from "./Trainer/atheletesl";
 import CommunityPage from "./Trainer/communitytrainer";
 import SponsorSignup from "./components/auth/sponsors/SponsorSignUp";
-import { UserProvider } from "./UserContext";
 import Tournament from "./Trainer/Tournaments";
 import SingleTournament from "./components/SingleTournament";
 
@@ -95,9 +94,7 @@ const router = createBrowserRouter(
 
 function App() {
   return (
-    <UserProvider>
       <RouterProvider router={router} />
-    </UserProvider>
   );
 }
 
