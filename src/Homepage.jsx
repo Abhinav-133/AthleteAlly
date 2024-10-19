@@ -487,7 +487,6 @@ export default function HomePage() {
           </div>
         </div>
       </motion.section> */}
-      
       {/* Upcoming Events */}
       <motion.section id="events" className="py-16 bg-black" {...fadeIn}>
         <div className="container mx-auto px-4">
@@ -537,9 +536,11 @@ export default function HomePage() {
             Join athleteally today and take your athletic journey to new
             heights!
           </p>
-          <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
-            Get Started Now
-          </button>
+          <a href="/register-options">
+            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full text-lg shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300">
+              Get Started Now
+            </button>
+          </a>
         </div>
       </motion.section>
       {/* Footer */}

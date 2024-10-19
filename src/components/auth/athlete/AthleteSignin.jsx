@@ -7,7 +7,6 @@ import { Link } from 'react-router-dom'
 import { auth, db } from '../../../firebaseConfig'; // Make sure to import your Firebase configuration
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
-import { useUser } from '../../../UserContext'
 
 
 const AthleteSignIn = () => {
@@ -15,7 +14,6 @@ const AthleteSignIn = () => {
   const [password, setPassword] = useState('')
   const [error, setError] = useState(null)
   const [loading, setLoading] = useState(false)
-  const { setUserDetails } = useUser()
   const navigate = useNavigate()
 
   const handleSubmit = async (event) => {
@@ -36,8 +34,6 @@ const AthleteSignIn = () => {
         
         // Store the user UID in sessionStorage
         sessionStorage.setItem('userUid', user.uid)
-        
-        setUserDetails({ uid: user.uid, ...userDoc.data() })
         navigate('/athlete-dashboard') // Navigate to the dashboard
       } else {
         setError('User not found in athletes collection.')
