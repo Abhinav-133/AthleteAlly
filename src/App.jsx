@@ -33,6 +33,7 @@ import CommunityPage from "./Trainer/communitytrainer";
 import SponsorSignup from "./components/auth/sponsors/SponsorSignUp";
 import Tournament from "./Trainer/Tournaments";
 import SingleTournament from "./components/SingleTournament";
+import AthleteTournaments from "./components/Athlete Dashboard/AthleteTournaments";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -47,6 +48,7 @@ const router = createBrowserRouter(
         <Route path="/athlete-dashboard" element={<Index />} />
         <Route path="/athlete-dashboard/profile" element={<AthleteProfile />} />
         <Route path="/athlete-dashboard/sportsgear" element={<SportsGear />} />
+        <Route path="/athlete-dashboard/mytournaments" element={<AthleteTournaments/>}/>
         <Route
           path="/athlete-dashboard/tournaments"
           element={<Tournaments />}
@@ -76,6 +78,7 @@ const router = createBrowserRouter(
           element={<TrainerProfilePage />}
         />
       </Route>
+      <Route path="/single" element={<SingleTournament/>}/>
 
       {/* Sponsors */}
       <Route path="/sponsor" element={<Sponsor />} />

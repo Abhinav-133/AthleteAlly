@@ -15,7 +15,15 @@ import {
   LogOut,
 } from "lucide-react";
 import { Outlet, Link, useNavigate } from "react-router-dom";
-import { getFirestore, doc, getDoc } from "firebase/firestore";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 
 // Sidebar Component
 const Sidebar = ({ isOpen, toggleSidebar }) => {
@@ -31,7 +39,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     {
       icon: Trophy,
       label: "Your Tournaments",
-      link: "/athlete-dashboard/tournaments",
+      link: "/athlete-dashboard/mytournaments",
     },
     { icon: Dumbbell, label: "Trainers", link: "/athlete-dashboard/news" },
   ];
@@ -45,9 +53,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       animate={{ width: isOpen ? 256 : 80 }}
     >
       <div className="flex justify-between items-center mb-10">
-        <h2 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>
-          athleteally
-        </h2>
+        <h1 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>
+          AthleteAlly
+        </h1>
         <button
           onClick={toggleSidebar}
           className="p-2 rounded-full hover:bg-gray-800 transition-colors"
@@ -79,66 +87,120 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
 };
 
 // Navbar Component
-const Navbar = ({ userName, userImage, handleLogout }) => {
+const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
+  const [dropdownOpen, setDropdownOpen] = useState(false);
+  const [notificationsOpen, setNotificationsOpen] = useState(false);
+
+  const toggleDropdown = () => {
+    setDropdownOpen(!dropdownOpen);
+  };
+
+  const toggleNotifications = () => {
+    setNotificationsOpen(!notificationsOpen);
+  };
+
   return (
     <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
       <div className="flex items-center">
-        <Search className="mr-2" />
+        {/* <Search className="mr-2" />
         <input
           type="text"
           placeholder="Search..."
           className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-600"
-        />
+        /> */}
       </div>
+
       <div className="flex items-center space-x-4">
-        <button
-          className="relative p-2 rounded-full hover:bg-gray-800 transition-colors"
-          aria-label="Notifications"
-        >
-          <Bell size={24} />
-          <span className="absolute top-0 right-0 bg-red-500 rounded-full w-4 h-4 text-xs flex items-center justify-center">
-            3
-          </span>
-        </button>
-        <div className="flex items-center">
-          <span className="mr-2">{userName || "User"}</span>
-          <ChevronDown size={16} />
+        {/* Notification Bell with Dropdown */}
+        <div className="relative">
+          <button
+            onClick={toggleNotifications}
+            className="relative p-2 rounded-full hover:bg-gray-800 transition-colors"
+            aria-label="Notifications"
+          >
+            <Bell size={24} />
+            <span className="absolute top-0 right-0 bg-red-500 rounded-full w-4 h-4 text-xs flex items-center justify-center">
+              {notifications.length}
+            </span>
+          </button>
+
+          {/* Notifications Dropdown */}
+          {notificationsOpen && (
+            <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg z-10">
+              <ul className="py-2 text-sm text-white">
+                {notifications.length > 0 ? (
+                  notifications.map((tournament, index) => (
+                    <li key={index} className="hover:bg-gray-700 px-4 py-2">
+                      Upcoming Tournament: {tournament.name} -{" "}
+                      {new Date(tournament.date.seconds * 1000).toDateString()}
+                    </li>
+                  ))
+                ) : (
+                  <li className="hover:bg-gray-700 px-4 py-2">
+                    No upcoming tournaments.
+                  </li>
+                )}
+              </ul>
+            </div>
+          )}
         </div>
-        {/* Logout Button */}
-        <button
-          onClick={handleLogout}
-          className="p-2 rounded-full hover:bg-gray-800 transition-colors"
-          aria-label="Logout"
-        >
-          <LogOut size={24} />
-        </button>
+
+        {/* User Dropdown */}
+        <div className="relative">
+          <div
+            className="flex items-center space-x-2 cursor-pointer"
+            onClick={toggleDropdown}
+          >
+            <span>{userName || "User"}</span>
+            <ChevronDown size={16} />
+          </div>
+
+          {/* User Options Dropdown */}
+          {dropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
+              <ul className="py-2 text-sm text-white">
+                <li className="hover:bg-gray-700 px-4 py-2">
+                  <Link to="/athlete-dashboard/edit-profile">Edit Profile</Link>
+                </li>
+                <li className="hover:bg-gray-700 px-4 py-2">
+                  <Link to="/athlete-dashboard/ask-query">Ask Query</Link>
+                </li>
+                <li
+                  className="hover:bg-gray-700 px-4 py-2 cursor-pointer"
+                  onClick={handleLogout}
+                >
+                  Logout
+                </li>
+              </ul>
+            </div>
+          )}
+        </div>
       </div>
     </div>
   );
 };
 
-// Fetch User Data Function
-const fetchUserData = async (userId, db) => {
-  if (!userId) return; // Ensure userId exists
-  try {
-    const userDocRef = doc(db, "athletes", userId);
-    const userDoc = await getDoc(userDocRef);
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      console.log("User data:", userData);
-      return userData;
-    } else {
-      console.log("No such user document found!");
-    }
-  } catch (error) {
-    console.error("Error fetching user data:", error);
-  }
+// Fetch Tournaments Data Function
+const fetchUpcomingTournaments = async (db) => {
+  const tournamentsRef = collection(db, "tournaments");
+  const today = new Date();
+
+  const q = query(tournamentsRef, where("date", ">", today));
+  const querySnapshot = await getDocs(q);
+
+  const upcomingTournaments = [];
+  querySnapshot.forEach((doc) => {
+    upcomingTournaments.push({ id: doc.id, ...doc.data() });
+  });
+
+  return upcomingTournaments;
 };
 
 // Main Dashboard Component
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [userData, setUserData] = useState(null);
+  const [notifications, setNotifications] = useState([]);
   const db = getFirestore(); // Initialize Firestore
   const navigate = useNavigate(); // To redirect the user
 
@@ -155,6 +217,10 @@ export default function Dashboard() {
 
       const data = await fetchUserData(userUid, db);
       setUserData(data);
+
+      // Fetch upcoming tournaments
+      const upcomingTournaments = await fetchUpcomingTournaments(db);
+      setNotifications(upcomingTournaments);
     };
 
     getUserData();
@@ -181,7 +247,7 @@ export default function Dashboard() {
       >
         <Navbar
           userName={userData?.name || "User"} // Display the actual name coming from userData
-          userImage={userData?.imageUrl} // Update this if the user data contains an image URL
+          notifications={notifications} // Pass upcoming tournaments as notifications
           handleLogout={handleLogout} // Pass the logout handler to Navbar
         />
         <Outlet />
@@ -189,3 +255,22 @@ export default function Dashboard() {
     </div>
   );
 }
+
+// Fetch User Data Function
+const fetchUserData = async (userId, db) => {
+  if (!userId) return; // Ensure userId exists
+  try {
+    const userDocRef = doc(db, "athletes", userId);
+    const userDoc = await getDoc(userDocRef);
+    if (userDoc.exists()) {
+      const userData = userDoc.data();
+      return userData;
+    } else {
+      console.log("No such document!");
+      return null;
+    }
+  } catch (error) {
+    console.error("Error fetching user data: ", error);
+    return null;
+  }
+};
