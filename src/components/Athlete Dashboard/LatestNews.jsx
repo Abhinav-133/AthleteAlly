@@ -80,24 +80,21 @@ export default function LatestNews() {
     getLast7DaysNews();
   }, []);
   return (
-    <div className="min-h-screen bg-gray-600 text-white p-8">
+    <div className="min-h-screen bg-white-600 text-gray-800 p-8">
       <h1 className="text-4xl font-bold mb-8 text-center">
         Latest Sports News
       </h1>
 
-      <div className="mb-8 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div className="relative w-full sm:w-64">
+      <div className="flex flex-col md:flex-row justify-between items-center gap-6 mb-8 bg-white p-4 rounded shadow-lg">
+        <div className="relative w-full md:w-1/3">
           <input
             type="text"
             placeholder="Search news..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            className="bg-white/10 text-white border border-white/20 pl-10 pr-3 py-2 rounded"
+            className="bg-gray-200 text-gray-800 border-gray-300 pl-10 p-2 rounded w-full"
           />
-          <Search
-            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60"
-            size={18}
-          />
+         <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
         </div>
 
         <div className="flex space-x-2">

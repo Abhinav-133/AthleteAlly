@@ -1,71 +1,79 @@
 import React from "react";
-import {
-    Search,
-    Bell,
-    ChevronDown,
-    Menu,
-    User,
-    ShoppingBag,
-    Trophy,
-    Users,
-    Dumbbell,
-    Apple,
-    X,
-    LogOut,
-    Quote,
-  } from "lucide-react";
+import { Quote, Trophy, Dumbbell } from "lucide-react";
 
 function Index() {
   const MotivationalQuote = () => {
     return (
-      <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-6 rounded-lg shadow-md text-white mb-6">
-        <Quote className="w-8 h-8 mb-4" />
-        <p className="text-xl font-semibold mb-2">
-          "The only way to prove that you're a good sport is to lose."
+      <div className="bg-gradient-to-r from-blue-500 to-purple-600 p-8 rounded-lg shadow-lg text-white mb-6 flex items-center">
+        <Quote className="w-10 h-10 mr-4" />
+        <div>
+          <p className="text-2xl font-bold mb-2">
+            "The only way to prove that you're a good sport is to lose."
+          </p>
+          <p className="text-right italic">- Ernie Banks</p>
+        </div>
+      </div>
+    );
+  };
+
+  const CommonForAthletes = () => {
+    return (
+      <div className="bg-white p-8 rounded-lg shadow-lg text-gray-800 mb-6">
+        <h2 className="text-2xl font-bold mb-4 border-b-2 border-blue-500 pb-2">Consistency is Key</h2>
+        <p className="text-gray-700 text-lg mb-4">
+          No matter your sport, every athlete knows that consistency in training and mindset is crucial for success.
         </p>
-        <p className="text-right">- Ernie Banks</p>
+        <div className="mt-4 text-blue-600 font-semibold">
+          <p>Keep pushing your limits!</p>
+        </div>
+      </div>
+    );
+  };
+
+  const QuickTips = () => {
+    return (
+      <div className="bg-white p-8 rounded-lg shadow-lg text-gray-800 mb-6">
+        <h2 className="text-xl font-semibold mb-4 border-b-2 border-blue-500 pb-2">Quick Tips for Athletes</h2>
+        <ul className="list-disc pl-6">
+          <li className="mb-2">Stay hydrated before, during, and after your training.</li>
+          <li className="mb-2">Set realistic goals and track your progress.</li>
+          <li className="mb-2">Incorporate rest days into your training schedule.</li>
+          <li className="mb-2">Maintain a balanced diet rich in nutrients.</li>
+          <li className="mb-2">Focus on mental strength as much as physical strength.</li>
+        </ul>
+      </div>
+    );
+  };
+
+  const IconsSection = () => {
+    return (
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+        <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+          <Trophy className="w-16 h-16 text-blue-500 mb-4" />
+          <h3 className="text-lg font-semibold">Achievements</h3>
+          <p className="text-center text-gray-600">Celebrate your wins, big or small.</p>
+        </div>
+        <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+          <Dumbbell className="w-16 h-16 text-blue-500 mb-4" />
+          <h3 className="text-lg font-semibold">Strength Training</h3>
+          <p className="text-center text-gray-600">Incorporate strength training into your routine.</p>
+        </div>
+        <div className="flex flex-col items-center p-6 bg-white rounded-lg shadow-lg">
+          <Quote className="w-16 h-16 text-blue-500 mb-4" />
+          <h3 className="text-lg font-semibold">Motivation</h3>
+          <p className="text-center text-gray-600">Stay inspired to reach your goals.</p>
+        </div>
       </div>
     );
   };
 
   return (
-    <div>
-      <main className="p-8">
+    <div className="bg-gray-100 min-h-screen flex flex-col items-center justify-center p-8">
+      <main className="max-w-5xl w-full">
         <MotivationalQuote />
-
-        <h1 className="text-3xl font-bold mb-6 text-gray-800">
-          Welcome, John!
-        </h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
-              Upcoming Tournament
-            </h2>
-            <p className="text-gray-600">City Championships</p>
-            <p className="text-gray-600">Date: August 15, 2023</p>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
-              Training Progress
-            </h2>
-            <div className="flex items-center">
-              <div className="w-full bg-gray-200 rounded-full h-2.5 mr-2">
-                <div
-                  className="bg-blue-600 h-2.5 rounded-full"
-                  style={{ width: "75%" }}
-                ></div>
-              </div>
-              <span className="text-gray-600">75%</span>
-            </div>
-          </div>
-          <div className="bg-white p-6 rounded-lg shadow-md">
-            <h2 className="text-xl font-semibold mb-4 text-gray-800">
-              Next Training Session
-            </h2>
-            <p className="text-gray-600">High Intensity Interval Training</p>
-            <p className="text-gray-600">Time: 2:00 PM</p>
-          </div>
-        </div>
+        <CommonForAthletes />
+        <QuickTips />
+        <IconsSection />
       </main>
     </div>
   );
