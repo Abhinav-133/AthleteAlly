@@ -3,9 +3,9 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Calendar, MapPin, Users, Trophy } from "lucide-react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
-import { Timestamp } from "firebase/firestore";
+import { useNavigate } from "react-router-dom";
 
 const sports = ["All", "Swimming", "Running", "Tennis", "Basketball", "CrossFit", "Judo"];
 
@@ -142,6 +142,24 @@ function TournamentsGrid({ title, tournaments, showRegisterButton, emptyMessage 
 }
 
 function TournamentCard({ tournament, showRegisterButton }) {
+  const navigate = useNavigate();
+
+  const handleAboutClick = () => {
+    // Store the tournament ID in session storage
+    sessionStorage.setItem("tournamentID", tournament.id);
+
+    // Navigate to the /tournament page
+    navigate("/tournament");
+  };
+
+  const handleAboutClick1 = () => {
+    // Store the tournament ID in session storage
+    sessionStorage.setItem("tournamentID", tournament.id);
+
+    // Navigate to the /tournament page
+    navigate("/team-register");
+  };
+
   return (
     <div className="bg-white rounded shadow-lg hover:shadow-xl transition transform hover:scale-105 p-6">
       <h3 className="text-xl font-medium mb-2">{tournament.name}</h3>
@@ -166,11 +184,14 @@ function TournamentCard({ tournament, showRegisterButton }) {
       </div>
       <div className="mt-4 flex justify-between gap-2">
         {showRegisterButton ? (
-          <button className="w-full bg-blue-600 text-white py-2 rounded transition hover:bg-blue-700">
+          <button className="w-full bg-blue-600 text-white py-2 rounded transition hover:bg-blue-700"  onClick={handleAboutClick1}>
             Register
           </button>
         ) : null}
-        <button className="w-full bg-gray-300 text-gray-800 py-2 rounded transition hover:bg-gray-400">
+        <button
+          className="w-full bg-gray-300 text-gray-800 py-2 rounded transition hover:bg-gray-400"
+          onClick={handleAboutClick}
+        >
           About
         </button>
       </div>

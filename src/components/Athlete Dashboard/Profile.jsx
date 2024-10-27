@@ -17,7 +17,8 @@ export default function AthleteProfile() {
     achievements: "",
     bio: "",
     experience: "",
-    gender: ""
+    gender: "",
+    id:""
   });
   const db = getFirestore();
 
@@ -168,6 +169,7 @@ function SummarySection({ formData, displayOrder }) {
           {formData.name.split(' ').map(n => n[0]).join('')}
         </div>
       </div>
+      <p className="text-gray-500 mb-6 text-center">Athlete ID: <span className="font-semibold text-gray-700">{formData.id}</span></p>
       <div className="space-y-4">
         {displayOrder.map((key) => (
           <div key={key} className="flex items-center py-2">
@@ -186,20 +188,8 @@ function SummarySection({ formData, displayOrder }) {
 function AdditionalSections() {
   return (
     <div className="space-y-8 lg:row-span-1">
-      <ContactInfo />
-      <Tournaments />
-    </div>
-  );
-}
-
-// Component for Contact Info
-function ContactInfo() {
-  return (
-    <div className="bg-white p-8 rounded-lg shadow-xl border border-gray-200">
-      <h3 className="text-xl font-semibold mb-4 text-gray-600">Contact Information</h3>
-      <p>Email: example@email.com</p>
-      <p>Phone: 123-456-7890</p>
-      <p>Address: 123 Main St, Anytown, USA</p>
+      {/* <ContactInfo />
+      <Tournaments /> */}
     </div>
   );
 }
@@ -221,9 +211,11 @@ function IconSelector({ key }) {
     case 'name': return <User className="text-gray-400" />;
     case 'email': return <Mail className="text-gray-400" />;
     case 'phone': return <Phone className="text-gray-400" />;
+    case 'state': return <MapPin className="text-gray-400" />;
     case 'dob': return <Calendar className="text-gray-400" />;
     case 'sport': return <Dumbbell className="text-gray-400" />;
     case 'achievements': return <Award className="text-gray-400" />;
     default: return <User className="text-gray-400" />;
   }
 }
+
