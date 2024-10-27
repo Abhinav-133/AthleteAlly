@@ -35,13 +35,13 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       link: "/athlete-dashboard/tournaments",
     },
     { icon: Dumbbell, label: "Latest News", link: "/athlete-dashboard/news" },
-    { icon: Apple, label: "Community", link: "/athlete-dashboard/community" },
+    // { icon: Apple, label: "Community", link: "/athlete-dashboard/community" },
     {
       icon: Trophy,
       label: "Your Tournaments",
       link: "/athlete-dashboard/mytournaments",
     },
-    { icon: Dumbbell, label: "Trainers", link: "/athlete-dashboard/news" },
+    { icon: Dumbbell, label: "Trainers", link: "/athlete-dashboard/alltrainers" },
   ];
 
   return (

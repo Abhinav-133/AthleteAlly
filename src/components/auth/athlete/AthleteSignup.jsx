@@ -69,6 +69,16 @@ const AthleteSignUp = () => {
       await sendEmailVerification(user);
       alert('Verification email sent. Please check your inbox.');
   
+      // Generate a fixed-length ID
+      const generateFixedLengthId = () => {
+        const namePart = formData.name.slice(0, 3).padEnd(3, 'X').toUpperCase();
+        const dobPart = formData.dob.replace(/-/g, "").slice(2, 8); // Gets YYMMDD format
+        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 random alphanumeric characters
+        return `${namePart}${dobPart}${randomPart}`;
+      };
+  
+      const athleteId = generateFixedLengthId();
+  
       // Save user details to Firestore using the user's UID as the document ID
       await setDoc(doc(db, "athletes", user.uid), {
         name: formData.name,
@@ -82,14 +92,15 @@ const AthleteSignUp = () => {
         experience: formData.experience,
         contactNo: formData.contactNo,
         adharCard: formData.adharCard,
-        bio: formData.bio, // Save bio in Firestore
+        bio: formData.bio,
         createdAt: new Date().toISOString(),
+        id: athleteId, // Store the generated fixed-length ID
       });
   
       console.log("User signed up and details saved:", user);
   
       // Optionally navigate to a verification-pending page
-      navigate("/athlete-login"); 
+      navigate("/athlete-login");
   
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
@@ -106,6 +117,7 @@ const AthleteSignUp = () => {
       setLoading(false);
     }
   };
+  
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
