@@ -6,10 +6,10 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
 import Tournaments from "views/admin/tournaments";
-// import AddTournament from "views/admin/addTournament";
 // import Athletes from "views/admin/athletes";
 // import Trainers from "views/admin/trainers";
 // import Sponsors from "views/admin/sponsors";
+import AddTournament from "views/admin/addTournament";
 
 // Auth Imports
 import SignIn from "views/auth/SignIn";
@@ -71,7 +71,7 @@ const routes = [
     layout: "/admin",
     icon: <MdEvent className="h-6 w-6" />,
     path: "add-tournament",
-    component: <Tournaments />,
+    component: <AddTournament />,
   },
   {
     name: "Athletes",

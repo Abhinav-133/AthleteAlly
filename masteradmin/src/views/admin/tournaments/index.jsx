@@ -1,63 +1,32 @@
 import React, { useState } from "react";
 import { ChevronRight, MapPin, Calendar, Users, Plus } from "lucide-react";
-import AddTournament from "./AddTournament";
-
-const initialTournaments = [
-  {
-    id: 1,
-    name: "Summer Soccer Championship",
-    date: "2024-07-15",
-    venue: "Central Stadium",
-    sports: "Soccer",
-    organiser: "City Sports Association",
-  },
-  {
-    id: 2,
-    name: "Annual Tennis Open",
-    date: "2024-08-20",
-    venue: "Grand Tennis Club",
-    sports: "Tennis",
-    organiser: "National Tennis Federation",
-  },
-  {
-    id: 3,
-    name: "Winter Basketball League",
-    date: "2023-12-10",
-    venue: "Indoor Sports Complex",
-    sports: "Basketball",
-    organiser: "Regional Basketball Association",
-  },
-  {
-    id: 4,
-    name: "Spring Athletics Meet",
-    date: "2023-04-05",
-    venue: "University Track",
-    sports: "Athletics",
-    organiser: "University Sports Department",
-  },
-  {
-    id: 5,
-    name: "Autumn Volleyball Tournament",
-    date: "2024-09-30",
-    venue: "Beach Arena",
-    sports: "Volleyball",
-    organiser: "National Volleyball League",
-  },
-  {
-    id: 6,
-    name: "City Marathon",
-    date: "2024-10-15",
-    venue: "Downtown City",
-    sports: "Running",
-    organiser: "City Athletics Club",
-  },
-];
+import { db } from "../../../firebaseConfig";
+import { useEffect } from "react";
+import { collection, getDocs, Timestamp } from "firebase/firestore";
 
 export default function Tournaments() {
   const [showUpcoming, setShowUpcoming] = useState(true);
-  const [tournaments, setTournaments] = useState(initialTournaments);
-  const [isModalOpen, setIsModalOpen] = useState(false); // State for modal visibility
+  const [tournaments, setTournaments] = useState([]);
   const currentDate = new Date();
+
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      const querySnapshot = await getDocs(collection(db, "tournaments"));
+      const tournamentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      const formattedTournaments = tournamentsData.map((tournament) => ({
+        ...tournament,
+        date:
+          tournament.date instanceof Timestamp
+            ? tournament.date.toDate()
+            : new Date(tournament.date),
+      }));
+      setTournaments(formattedTournaments);
+    };
+    fetchTournaments();
+  }, []);
 
   const filteredTournaments = tournaments.filter((tournament) => {
     const tournamentDate = new Date(tournament.date);
@@ -65,14 +34,6 @@ export default function Tournaments() {
       ? tournamentDate > currentDate
       : tournamentDate <= currentDate;
   });
-
-  const addNewTournament = () => {
-    setIsModalOpen(true); // Open modal
-  };
-
-  const closeModal = () => {
-    setIsModalOpen(false); // Close modal
-  };
 
   return (
     <div className="bg-rgb(255 255 255 / 0.1) min-h-screen bg-gradient-to-br">
@@ -105,13 +66,6 @@ export default function Tournaments() {
                 Past
               </button>
             </div>
-            <button
-              onClick={addNewTournament}
-              className="flex items-center space-x-2 rounded-full bg-blue-500 px-4 py-2 text-white transition-colors duration-300 hover:bg-blue-600"
-            >
-              <Plus size={20} />
-              <span>Add Tournament</span>
-            </button>
           </div>
         </div>
 
@@ -133,27 +87,20 @@ export default function Tournaments() {
                 </div>
                 <div className="mb-3 flex items-center text-gray-600">
                   <MapPin className="mr-3 h-5 w-5 text-blue-500" />
-                  <span>{tournament.venue}</span>
+                  <span>{tournament.location}</span>
                 </div>
                 <div className="mb-3 flex items-center text-gray-600">
                   <ChevronRight className="mr-3 h-5 w-5 text-blue-500" />
-                  <span>{tournament.sports}</span>
+                  <span>{tournament.sport}</span>
                 </div>
                 <div className="flex items-center text-gray-600">
                   <Users className="mr-3 h-5 w-5 text-blue-500" />
-                  <span>{tournament.organiser}</span>
+                  <span>{tournament.organizer}</span>
                 </div>
               </div>
             </div>
           ))}
         </div>
-
-        {/* Modal for AddTournament */}
-        {isModalOpen && (
-          <div className="bg-black fixed inset-0 z-50 flex items-center justify-center bg-opacity-50">
-            <AddTournament closeModal={closeModal} />
-          </div>
-        )}
       </div>
     </div>
   );
