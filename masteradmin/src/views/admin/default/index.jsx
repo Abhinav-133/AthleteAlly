@@ -12,6 +12,7 @@ import Widget from "components/widget/Widget";
 import ComplexTable from "views/admin/default/components/ComplexTable";
 import DailyTraffic from "views/admin/default/components/DailyTraffic";
 import tableDataComplex from "./variables/tableDataComplex.json";
+import TournamentSummary from "./components/TournamentSummary";
 
 const Dashboard = () => {
   const [athleteCount, setAthleteCount] = useState(0);
@@ -19,8 +20,6 @@ const Dashboard = () => {
   const [activeTournamentCount, setActiveTournamentCount] = useState(0);
   const [pastTournamentCount, setPastTournamentCount] = useState(0);
   const [sponsorCount, setSponsorCount] = useState(0);
-  const [registrationCount, setRegistrationCount] = useState(0); // New state for registrations
-
   useEffect(() => {
     const fetchCounts = async () => {
       try {
@@ -46,9 +45,6 @@ const Dashboard = () => {
         // Fetch sponsors count
         const sponsorsSnapshot = await getDocs(collection(db, "sponsors"));
         setSponsorCount(sponsorsSnapshot.size);
-
-        const registrationsSnapshot = await getDocs(collection(db, "registrations")); // Assuming you have a "registrations" collection
-        setRegistrationCount(registrationsSnapshot.size);
       } catch (error) {
         console.error("Error fetching counts: ", error);
       }
@@ -95,7 +91,7 @@ const Dashboard = () => {
 
       {/* Charts */}
       <div className="mt-5 grid grid-cols-1 gap-5 md:grid-cols-2">
-        <TotalSpent />
+        <TournamentSummary />
         <WeeklyRevenue />
       </div>
 

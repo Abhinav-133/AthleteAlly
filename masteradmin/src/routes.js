@@ -10,6 +10,7 @@ import Tournaments from "views/admin/tournaments";
 // import Trainers from "views/admin/trainers";
 // import Sponsors from "views/admin/sponsors";
 import AddTournament from "views/admin/addTournament";
+import Athletes from "views/admin/athletes";
 
 // Auth Imports
 import SignIn from "views/auth/SignIn";
@@ -28,6 +29,8 @@ import {
 } from "react-icons/md";
 
 import { TbTournament } from "react-icons/tb";
+import Trainers from "views/admin/trainers";
+import Sponsors from "views/admin/sponsors";
 
 const routes = [
   {
@@ -78,21 +81,21 @@ const routes = [
     layout: "/admin",
     icon: <MdGroup className="h-6 w-6" />,
     path: "athletes",
-    component: <Tournaments />,
+    component: <Athletes />,
   },
   {
     name: "Trainers",
     layout: "/admin",
     icon: <MdPersonAdd className="h-6 w-6" />,
     path: "trainers",
-    component: <Tournaments />,
+    component: <Trainers/>,
   },
   {
     name: "Sponsors",
     layout: "/admin",
     icon: <MdBusinessCenter className="h-6 w-6" />,
     path: "sponsors",
-    component: <Tournaments />,
+    component: <Sponsors/>,
   },
   // {
   //   name: "Sign In",
