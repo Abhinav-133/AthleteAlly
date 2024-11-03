@@ -2,7 +2,6 @@ import React from "react";
 import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import Navbar from "components/navbar/RTL";
 import Sidebar from "components/sidebar/RTL";
-import Footer from "components/footer/Footer";
 import routes from "routes.js";
 
 export default function RTL(props) {
@@ -84,9 +83,6 @@ export default function RTL(props) {
                   element={<Navigate to="/admin/default" replace />}
                 />
               </Routes>
-            </div>
-            <div className="p-3">
-              <Footer />
             </div>
           </div>
         </main>

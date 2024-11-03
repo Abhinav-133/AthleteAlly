@@ -6,9 +6,6 @@ import Profile from "views/admin/profile";
 import DataTables from "views/admin/tables";
 import RTLDefault from "views/rtl/default";
 import Tournaments from "views/admin/tournaments";
-// import Athletes from "views/admin/athletes";
-// import Trainers from "views/admin/trainers";
-// import Sponsors from "views/admin/sponsors";
 import AddTournament from "views/admin/addTournament";
 import Athletes from "views/admin/athletes";
 
@@ -18,9 +15,7 @@ import SignIn from "views/auth/SignIn";
 // Icon Imports
 import {
   MdHome,
-  MdOutlineShoppingCart,
   MdBarChart,
-  MdPerson,
   MdLock,
   MdGroup,
   MdEvent,
@@ -31,6 +26,7 @@ import {
 import { TbTournament } from "react-icons/tb";
 import Trainers from "views/admin/trainers";
 import Sponsors from "views/admin/sponsors";
+import SignUp from "views/auth/SignUp";
 
 const routes = [
   {
@@ -97,13 +93,20 @@ const routes = [
     path: "sponsors",
     component: <Sponsors/>,
   },
-  // {
-  //   name: "Sign In",
-  //   layout: "/auth",
-  //   path: "sign-in",
-  //   icon: <MdLock className="h-6 w-6" />,
-  //   component: <SignIn />,
-  // },
+  {
+    name: "Sign In",
+    layout: "/auth",
+    path: "sign-in",
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignIn />,
+  },
+  {
+    name: "Sign Up",
+    layout: "/auth",
+    path: "sign-up",
+    icon: <MdLock className="h-6 w-6" />,
+    component: <SignUp />,
+  },
   // {
   //   name: "RTL Admin",
   //   layout: "/rtl",
