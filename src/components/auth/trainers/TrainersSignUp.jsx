@@ -68,6 +68,13 @@ const TrainersSignUp = () => {
       // Send email verification
       await sendEmailVerification(user);
       alert('Verification email sent. Please check your inbox.');
+
+      const generateFixedLengthId = () => {
+        const namePart = formData.name.slice(0, 3).padEnd(3, 'X').toUpperCase();
+        const dobPart = formData.dob.replace(/-/g, "").slice(2, 8); // Gets YYMMDD format
+        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 random alphanumeric characters
+        return `${namePart}${dobPart}${randomPart}`;
+      };
   
       // Save user details to Firestore using the user's UID as the document ID
       await setDoc(doc(db, "trainers", user.uid), {

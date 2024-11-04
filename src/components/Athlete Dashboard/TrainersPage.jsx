@@ -1,8 +1,8 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { db } from "../../firebaseConfig"; // Adjust path as needed
+import { doc, updateDoc, getDocs, collection } from "firebase/firestore"; 
+import { db } from "../../firebaseConfig";
 import { motion } from "framer-motion";
 
 export default function AllTrainers() {
@@ -24,6 +24,22 @@ export default function AllTrainers() {
 
     fetchTrainers();
   }, []);
+  const userUid = sessionStorage.getItem("userUid");
+  const handleEnroll = async (trainerId) => {
+    try {
+      const athleteRef = doc(db, "athletes", userUid); // Reference to the athlete's document
+  
+      // Update athlete's document with trainerId
+      await updateDoc(athleteRef, {
+        trainerId: trainerId,
+      });
+      
+      alert("Successfully enrolled with trainer!");
+    } catch (error) {
+      console.error("Error enrolling:", error);
+      alert("Failed to enroll. Please try again.");
+    }
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 p-8">
@@ -56,10 +72,16 @@ export default function AllTrainers() {
               </span>
               <div className="mt-4 text-gray-700 space-y-1">
                 <p><strong>Experience:</strong> {trainer.experience} years</p>
-                <p><strong>Location:</strong> {trainer.location}</p>
+                <p><strong>Location:</strong> {trainer.district}</p>
                 <p><strong>Email:</strong> {trainer.email}</p>
                 <p><strong>State:</strong> {trainer.state}</p>
               </div>
+              <button
+                onClick={() => handleEnroll(trainer.id)}
+                className="mt-4 w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
+              >
+                Enroll
+              </button>
             </motion.div>
           ))}
         </motion.div>
