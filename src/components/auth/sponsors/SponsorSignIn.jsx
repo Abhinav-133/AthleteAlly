@@ -1,54 +1,69 @@
-'use client'
+"use client";
 
-import React, { useState } from 'react'
-import { motion } from 'framer-motion'
-import { TextField, Button, CircularProgress, Alert } from '@mui/material'
-import { Mail, Lock } from 'lucide-react'
-import { auth } from '../../../firebaseConfig' // Ensure correct import of your Firebase config
-import { signInWithEmailAndPassword } from 'firebase/auth'
-import { useNavigate } from 'react-router-dom'
-
+import React, { useState } from "react";
+import { motion } from "framer-motion";
+import { TextField, Button, CircularProgress, Alert } from "@mui/material";
+import { Mail, Lock } from "lucide-react";
+import { auth, db } from "../../../firebaseConfig"; // Ensure correct import of your Firebase config
+import { signInWithEmailAndPassword } from "firebase/auth";
+import { useNavigate } from "react-router-dom";
+import { doc, getDoc } from "firebase/firestore";
 
 export default function SponsorSignIn() {
   const [formValues, setFormValues] = useState({
     email: "",
-    password: ""
-  })
+    password: "",
+  });
 
-  const [errors, setErrors] = useState({})
-  const [isSubmitting, setIsSubmitting] = useState(false)
-  const [authError, setAuthError] = useState(null)
-  const navigate = useNavigate()
+  const [errors, setErrors] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [authError, setAuthError] = useState(null);
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormValues({ ...formValues, [e.target.name]: e.target.value })
-    setAuthError(null) // Clear authentication error on input change
-  }
+    setFormValues({ ...formValues, [e.target.name]: e.target.value });
+    setAuthError(null); // Clear authentication error on input change
+  };
 
   const validateForm = () => {
-    let newErrors = {}
-    if (!formValues.email) newErrors.email = "Email is required"
-    else if (!/^\S+@\S+$/.test(formValues.email)) newErrors.email = "Invalid email address"
-    if (!formValues.password) newErrors.password = "Password is required"
-    setErrors(newErrors)
-    return Object.keys(newErrors).length === 0
-  }
+    let newErrors = {};
+    if (!formValues.email) newErrors.email = "Email is required";
+    else if (!/^\S+@\S+$/.test(formValues.email))
+      newErrors.email = "Invalid email address";
+    if (!formValues.password) newErrors.password = "Password is required";
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
 
   const onSubmit = async (e) => {
-    e.preventDefault()
+    e.preventDefault();
     if (validateForm()) {
-      setIsSubmitting(true)
+      setIsSubmitting(true);
       try {
         // Sign in with Firebase Auth
-        await signInWithEmailAndPassword(auth, formValues.email, formValues.password)
-        navigate('/sponsor') // Replace with navigation to the dashboard if needed
+        const sponsorCredentials = await signInWithEmailAndPassword(
+          auth,
+          formValues.email,
+          formValues.password
+        );
+        const sponsor = sponsorCredentials.user;
+        const sponsorDoc = await getDoc(doc(db, "sponsors", sponsor.uid));
+
+        if (sponsorDoc.exists()) {
+          console.log("User exists in athletes collection:", sponsorDoc.data());
+          sessionStorage.setItem("sponsorUid", sponsor.uid);
+          navigate("/sponsor");
+        } else {
+          setError("Sponsor not found in sponsors collection.");
+          console.log("Sponsor not found in sponsors collection.");
+        }
       } catch (err) {
-        setAuthError(err.message) // Set authentication error message
+        setAuthError(err.message); // Set authentication error message
       } finally {
-        setIsSubmitting(false)
+        setIsSubmitting(false);
       }
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-blue-900 to-black flex flex-col justify-center items-center p-4 sm:p-8">
@@ -86,7 +101,7 @@ export default function SponsorSignIn() {
                 startAdornment: <Mail className="mr-2 text-white" size={18} />,
               }}
               InputLabelProps={{
-                className: 'text-white',
+                className: "text-white",
               }}
               className="text-white"
             />
@@ -106,7 +121,7 @@ export default function SponsorSignIn() {
                 startAdornment: <Lock className="mr-2 text-white" size={18} />,
               }}
               InputLabelProps={{
-                className: 'text-white',
+                className: "text-white",
               }}
               className="text-white"
             />
@@ -124,7 +139,7 @@ export default function SponsorSignIn() {
                 Signing in...
               </>
             ) : (
-              'Sign In'
+              "Sign In"
             )}
           </Button>
         </form>
@@ -134,12 +149,15 @@ export default function SponsorSignIn() {
           transition={{ delay: 0.4 }}
           className="mt-6 text-center text-white/80"
         >
-          Don’t have an account?{' '}
-          <a href="/sponsors-signup" className="text-orange-300 hover:underline">
+          Don’t have an account?{" "}
+          <a
+            href="/sponsors-signup"
+            className="text-orange-300 hover:underline"
+          >
             Sign Up
           </a>
         </motion.p>
       </motion.div>
     </div>
-  )
+  );
 }
