@@ -1,16 +1,23 @@
 
 import React, { useState, useEffect } from "react";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../firebaseConfig";
 import { motion } from "framer-motion";
 
 export default function AllTrainers() {
   const [athletes, setathletes] = useState([]);
+  const userUid = sessionStorage.getItem("userUid");
+
 
   useEffect(() => {
     const fetchathletes = async () => {
       try {
-        const querySnapshot = await getDocs(collection(db, "athletes"));
+        // Create a query to fetch athletes whose trainerId equals userUid
+        const athletesQuery = query(
+          collection(db, "athletes"),
+          where("trainerId", "==", userUid)
+        );
+        const querySnapshot = await getDocs(athletesQuery);
         const athletesData = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),

@@ -35,7 +35,7 @@ const TrainersSignIn = () => {
         // Store the user UID in sessionStorage
         sessionStorage.setItem('userUid', user.uid)
         
-        setUserDetails({ uid: user.uid, ...userDoc.data() })
+        //setUserDetails({ uid: user.uid, ...userDoc.data() })
         navigate('/trainers-dashboard') // Navigate to the dashboard
       } else {
         setError('User not found')
