@@ -34,7 +34,7 @@ export default function AllTrainers() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 p-8">
       <h1 className="text-4xl font-bold mb-8 text-center text-blue-800">
-        athletes
+        Athletes
       </h1>
 
       {athletes.length === 0 ? (

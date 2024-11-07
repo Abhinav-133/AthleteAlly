@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { Link } from "react-router-dom";
+import { db } from "./firebaseConfig";
+import { collection, getDocs, Timestamp } from "firebase/firestore";
 import {
   Calendar,
   Dumbbell,
@@ -16,30 +18,6 @@ const fadeIn = {
   initial: { opacity: 0, y: 20 },
   animate: { opacity: 1, y: 0 },
   transition: { duration: 0.6 },
-};
-
-const FeaturedAthleteMarquee = ({ athletes }) => {
-  return (
-    <div className="overflow-hidden bg-gray-800 py-8">
-      <div className="flex animate-marquee whitespace-nowrap">
-        {athletes.concat(athletes).map((athlete, index) => (
-          <div key={index} className="mx-4 flex-shrink-0">
-            <div className="text-center">
-              <img
-                src={athlete.image}
-                alt={athlete.name}
-                className="w-32 h-32 rounded-full mx-auto mb-2 border-2 border-gray-600"
-              />
-              <h3 className="text-lg font-semibold mb-1 text-gray-200">
-                {athlete.name}
-              </h3>
-              <p className="text-sm text-gray-400">{athlete.sport}</p>
-            </div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 };
 
 const ParticleBackground = () => (
@@ -80,7 +58,6 @@ const NewsMarquee = ({ news }) => {
     </div>
   );
 };
-
 export default function HomePage() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrollPosition, setScrollPosition] = useState(0);
@@ -88,6 +65,7 @@ export default function HomePage() {
   const [newsUrl, setNewsUrl] = useState("");
   const [top7News, setTop7news] = useState([]);
   const [top3Articles, setTop3Articles] = useState();
+  const [tournaments, setTournaments] = useState([]);
 
   const getLast7DaysNews = () => {
     const today = new Date();
@@ -106,12 +84,9 @@ export default function HomePage() {
     let response = await fetch(newsUrl);
     response = await response.json();
 
-    //Extract the top 3 articles
     setTop3Articles(response.articles.slice(0, 3));
 
-    // Extract the top 7 articles
     const articles = response.articles.slice(0, 7);
-    // Update state once with the titles of the articles
     setTop7news((prevArticles) => [
       ...prevArticles,
       ...articles.map((item) => item.title),
@@ -122,6 +97,27 @@ export default function HomePage() {
     fetchNews();
   }, [newsUrl]);
 
+  useEffect(() => {
+    const fetchTournaments = async () => {
+      const querySnapshot = await getDocs(collection(db, "tournaments"));
+      const tournamentsData = querySnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      const formattedTournaments = tournamentsData.map((tournament) => {
+        const formattedDate =
+          tournament.date instanceof Timestamp
+            ? tournament.date.toDate()
+            : new Date(tournament.date);
+        return { ...tournament, date: formattedDate };
+      });
+
+      setTournaments(formattedTournaments.slice(0, 3));
+      console.log(tournaments);
+    };
+    fetchTournaments();
+  }, []);
   useEffect(() => {
     getLast7DaysNews();
     controls.start({ opacity: 1, y: 0 });
@@ -166,28 +162,13 @@ export default function HomePage() {
                   News
                 </a>
               </li>
-              <li>
-                <a
-                  href="#athletes"
-                  className="text-gray-200 hover:text-white transition-colors"
-                >
-                  Athletes
-                </a>
-              </li>
+
               <li>
                 <a
                   href="#services"
                   className="text-gray-200 hover:text-white transition-colors"
                 >
                   Services
-                </a>
-              </li>
-              <li>
-                <a
-                  href="#gear"
-                  className="text-gray-200 hover:text-white transition-colors"
-                >
-                  Gear
                 </a>
               </li>
               <li>
@@ -449,44 +430,6 @@ export default function HomePage() {
           </div>
         </div>
       </motion.section>
-      {/* Sports Gear */}
-      {/* <motion.section id="gear" className="py-16 bg-gray-900" {...fadeIn}>
-        <div className="container mx-auto px-4">
-          <h2 className="text-3xl font-bold mb-8 text-center text-gray-100">
-            Sports Gear
-          </h2>
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-            {[1, 2, 3, 4].map((i) => (
-              <motion.div
-                key={i}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <div className="bg-gray-800 rounded-lg shadow-lg p-4 relative overflow-hidden">
-                  <img
-                    src="https://imgs.search.brave.com/jo2hPZxH4D_srAq5IlRIRjq6nyPxYv4taDuGKDVFeMI/rs:fit:500:0:0:0/g:ce/aHR0cHM6Ly9tZWRp/YS5nZXR0eWltYWdl/cy5jb20vaWQvMTM3/MzUyNTU2L3Bob3Rv/L3Nwb3J0cy1lcXVp/cG1lbnQuanBnP3M9/NjEyeDYxMiZ3PTAm/az0yMCZjPV96OXRB/MWltMm00MmtCaDhX/VVlMbkZWLVhyNFhr/d2NVUndydHNtQTkw/TkU9"
-                    alt={`Sports Gear ${i}`}
-                    className="rounded-lg mb-4 w-full"
-                  />
-                  <h3 className="text-xl font-semibold mb-2 text-gray-100">
-                    Sports Gear {i}
-                  </h3>
-                  <p className="text-gray-300 mb-4">
-                    High-quality gear for top performance
-                  </p>
-                  <button className="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold py-2 px-4 rounded transition-colors shadow-md hover:shadow-lg">
-                    Shop Now
-                  </button>
-                  <div className="absolute top-2 right-2 w-12 h-12 bg-gray-700 rounded-full flex items-center justify-center">
-                    <ShoppingBag className="w-6 h-6 text-gray-300" />
-                  </div>
-                  <div className="absolute bottom-0 left-0 w-16 h-16 bg-gray-700 rounded-tr-full opacity-10"></div>
-                </div>
-              </motion.div>
-            ))}
-          </div>
-        </div>
-      </motion.section> */}
       {/* Upcoming Events */}
       <motion.section id="events" className="py-16 bg-black" {...fadeIn}>
         <div className="container mx-auto px-4">
@@ -494,24 +437,23 @@ export default function HomePage() {
             Upcoming Events
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {[1, 2, 3].map((i) => (
+            {tournaments.map((tournament, index) => (
               <motion.div
-                key={i}
+                key={tournament.id} 
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
               >
                 <div className="bg-gray-800 rounded-lg shadow-lg p-6 relative overflow-hidden">
                   <Calendar className="h-12 w-12 mb-4 text-gray-300" />
                   <h3 className="text-xl font-semibold mb-2 text-gray-100">
-                    Sports Event {i}
+                    {tournament.name}{" "}
                   </h3>
-                  <p className="text-gray-300 mb-2">Date: June 1{i}, 2023</p>
-                  <p className="text-gray-300 mb-4">
-                    Location: Sports Arena {i}
+                  <p className="text-gray-300 mb-2">
+                    Date: June 1{index + 1}, 2023{" "}
                   </p>
-                  <button className="w-full bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold py-2 px-4 rounded transition-colors shadow-md hover:shadow-lg">
-                    Register
-                  </button>
+                  <p className="text-gray-300 mb-4">
+                    {tournament.location}{" "}
+                  </p>
                   <div className="absolute top-0 right-0 w-24 h-24 bg-gray-700 rounded-full -mr-12 -mt-12 opacity-25"></div>
                   <div className="absolute bottom-0 left-0 w-16 h-16 bg-gray-700 rounded-tr-full opacity-10"></div>
                 </div>
