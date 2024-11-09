@@ -7,7 +7,7 @@ import { collection, getDocs, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 
-const sports = ["All", "Swimming", "Running", "Tennis", "Basketball", "CrossFit", "Judo"];
+const sports = ["All", "Swimming", "Running", "Tennis", "Basketball", "CrossFit", "Judo","Hockey"];
 
 export default function Tournaments() {
   const [searchTerm, setSearchTerm] = useState("");
