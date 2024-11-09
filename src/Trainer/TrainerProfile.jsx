@@ -1,136 +1,201 @@
-import React from "react"
-import { Edit, Star, Calendar, Users, Award, ChevronRight } from "lucide-react"
+import React, { useState ,useEffect} from "react"
+//import { Edit, Star, Calendar, User, Award, ChevronRight } from "lucide-react"
+import { User, Mail, Phone, MapPin, Calendar, Dumbbell, Award } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
 
-const ProfileSection = ({ title, children }) => (
-  <div className="bg-white rounded-lg shadow-md p-6 mb-6">
-    <h2 className="text-2xl font-semibold mb-4 text-gray-900">{title}</h2>
-    {children}
+export default function TrainerProfilePage(){
+  const[isEditing,setIsEditing]=useState(false);
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    contactNo: "",
+    dob: "",
+    state: "",
+    sport: "",
+    achievements: "",
+    bio: "",
+    experience: "",
+    gender: "",
+    id:""
+  });
+  const db=getFirestore();
+  
+
+  useEffect(() => {
+    const getUserData = async () => {
+      const userUid = sessionStorage.getItem("userUid");
+      if (userUid) {
+        const data = await fetchUserData(userUid, db);
+        setFormData(data);
+      }
+    };
+    getUserData();
+  }, [db]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  }
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    setIsEditing(false);
+
+    try {
+      const userUid = sessionStorage.getItem("userUid");
+      const userDocRef = doc(db, "trainers", userUid);
+      await updateDoc(userDocRef, formData);
+      console.log("User data updated successfully!");
+    } catch (error) {
+      console.error("Error updating user data:", error);
+    }
+  }
+
+  const fetchUserData = async (userId, db) => {
+    try {
+      const userDocRef = doc(db, "trainers", userId);
+      const userDoc = await getDoc(userDocRef);
+      if (userDoc.exists()) {
+        return userDoc.data();
+      } else {
+        console.log("No such user document found!");
+      }
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  }
+
+  const displayOrder = ['name', 'email', 'contactNo', 'dob', 'sport', 'experience', 'gender', 'state', 'bio'];
+return(
+  <div className="min-h-screen bg-gray-50 text-gray-800 p-10">
+  <h1 className="text-5xl font-semibold mb-8 text-center text-gray-700">Trainer Profile</h1>
+  <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+    <ProfileSection 
+      isEditing={isEditing} 
+      setIsEditing={setIsEditing} 
+      formData={formData} 
+      handleChange={handleChange} 
+      onSubmit={onSubmit} 
+      displayOrder={displayOrder} 
+    />
+    <SummarySection formData={formData} displayOrder={displayOrder} />
+    {/* <AdditionalSections /> */}
   </div>
-)
+</div>
+);
 
-const StatCard = ({ icon, title, value }) => (
-  <div className="bg-white rounded-lg shadow-md p-4 flex items-center">
-    {icon}
-    <div className="ml-4">
-      <p className="text-sm text-gray-600">{title}</p>
-      <p className="text-xl font-semibold">{value}</p>
-    </div>
-  </div>
-)
+// Profile information form component
+function ProfileSection({ isEditing, setIsEditing, formData, handleChange, onSubmit, displayOrder }) {
+  const MotionCard = motion.div;
 
-export default function TrainerProfilePage() {
   return (
-    <div className="min-h-screen bg-gray-100">
-      <main className="container mx-auto px-4 py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900">Trainer Profile</h1>
-          <button className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center">
-            <Edit size={20} className="mr-2" />
-            Edit Profile
-          </button>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <div className="lg:col-span-1">
-            <ProfileSection title="Personal Information">
-              <div className="flex flex-col items-center">
-                <img
-                  src="/placeholder.svg?height=200&width=200"
-                  alt="Trainer"
-                  className="w-48 h-48 rounded-full object-cover mb-4"
+    <MotionCard
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3 }}
+      className="lg:col-span-2 bg-white p-8 rounded-lg shadow-xl border border-gray-200"
+    >
+      <h2 className="text-2xl font-semibold mb-4 text-gray-600">Personal Information</h2>
+      <p className="text-gray-500 mb-6">Manage your personal details</p>
+      {isEditing ? (
+        <form onSubmit={onSubmit} className="space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {displayOrder.map((key) => (
+              <div key={key} className="form-group">
+                <label className="block text-sm font-medium mb-2 text-gray-500">
+                  {key.charAt(0).toUpperCase() + key.slice(1)}
+                </label>
+                <input
+                  name={key}
+                  value={formData[key]}
+                  onChange={handleChange}
+                  type={key === 'dob' ? 'date' : 'text'}
+                  className="block w-full bg-gray-50 border border-gray-300 rounded-md p-3 text-gray-700 focus:ring-2 focus:ring-blue-500"
                 />
-                <h3 className="text-xl font-semibold mb-2">Sarah Johnson</h3>
-                <p className="text-gray-600 mb-2">Fitness & Nutrition Specialist</p>
-                <div className="flex items-center text-yellow-500 mb-2">
-                  <Star size={20} fill="currentColor" />
-                  <Star size={20} fill="currentColor" />
-                  <Star size={20} fill="currentColor" />
-                  <Star size={20} fill="currentColor" />
-                  <Star size={20} fill="currentColor" />
-                  <span className="ml-2 text-gray-600">(4.9)</span>
-                </div>
-                <p className="text-gray-600">10 years experience</p>
               </div>
-            </ProfileSection>
-
-            <ProfileSection title="Contact Information">
-              <div className="space-y-2">
-                <p><strong>Email:</strong> sarah.johnson@example.com</p>
-                <p><strong>Phone:</strong> (555) 123-4567</p>
-                <p><strong>Location:</strong> New York, NY</p>
-              </div>
-            </ProfileSection>
+            ))}
           </div>
-
-          <div className="lg:col-span-2">
-            <ProfileSection title="About Me">
-              <p className="text-gray-700">
-                I'm a passionate fitness and nutrition specialist with over a decade of experience helping clients
-                achieve their health and wellness goals. My approach combines personalized workout plans, nutrition
-                guidance, and motivational coaching to ensure long-lasting results. Whether you're looking to lose
-                weight, build muscle, or improve your overall fitness, I'm here to guide you every step of the way.
-              </p>
-            </ProfileSection>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-6">
-              <StatCard icon={<Calendar className="text-blue-600" size={24} />} title="Sessions" value="1,234" />
-              <StatCard icon={<Users className="text-blue-600" size={24} />} title="Clients" value="89" />
-              <StatCard icon={<Award className="text-blue-600" size={24} />} title="Certifications" value="7" />
+          <div className="flex justify-end space-x-4 mt-4">
+            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow-md">
+              Save Changes
+            </button>
+            <button type="button" className="border border-gray-300 hover:bg-gray-100 text-gray-700 py-2 px-6 rounded-md" onClick={() => setIsEditing(false)}>
+              Cancel
+            </button>
+          </div>
+        </form>
+      ) : (
+        <div className="space-y-4">
+          {displayOrder.map((key) => (
+            <div key={key} className="flex items-center py-2">
+              <IconSelector key={key} />
+              <span className="ml-4 text-gray-600">
+                <strong className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {formData[key]}
+              </span>
             </div>
-
-            <ProfileSection title="Specializations">
-              <ul className="list-disc list-inside space-y-2 text-gray-700">
-                <li>Weight Loss</li>
-                <li>Strength Training</li>
-                <li>Nutrition Planning</li>
-                <li>HIIT Workouts</li>
-                <li>Injury Rehabilitation</li>
-              </ul>
-            </ProfileSection>
-
-            <ProfileSection title="Certifications">
-              <ul className="space-y-4">
-                <li className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Certified Personal Trainer (CPT)</p>
-                    <p className="text-sm text-gray-600">National Academy of Sports Medicine</p>
-                  </div>
-                  <ChevronRight className="text-gray-400" size={20} />
-                </li>
-                <li className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Certified Nutrition Specialist (CNS)</p>
-                    <p className="text-sm text-gray-600">Board for Certification of Nutrition Specialists</p>
-                  </div>
-                  <ChevronRight className="text-gray-400" size={20} />
-                </li>
-                <li className="flex items-center justify-between">
-                  <div>
-                    <p className="font-semibold">Corrective Exercise Specialist (CES)</p>
-                    <p className="text-sm text-gray-600">National Academy of Sports Medicine</p>
-                  </div>
-                  <ChevronRight className="text-gray-400" size={20} />
-                </li>
-              </ul>
-            </ProfileSection>
-
-            <ProfileSection title="Client Testimonials">
-              <div className="space-y-4">
-                <blockquote className="italic text-gray-700 border-l-4 border-blue-600 pl-4">
-                  "Sarah is an amazing trainer! Her personalized approach and constant encouragement helped me lose 30
-                  pounds and feel better than ever. Highly recommended!"
-                  <footer className="text-sm text-gray-600 mt-2">- Emily R.</footer>
-                </blockquote>
-                <blockquote className="italic text-gray-700 border-l-4 border-blue-600 pl-4">
-                  "Working with Sarah has been life-changing. Her nutrition advice and workout plans are top-notch. I've
-                  gained muscle, improved my diet, and feel more confident than ever."
-                  <footer className="text-sm text-gray-600 mt-2">- Michael T.</footer>
-                </blockquote>
-              </div>
-            </ProfileSection>
-          </div>
+          ))}
         </div>
-      </main>
-    </div>
-  )
+      )}
+      {!isEditing && (
+        <button
+          type="button"
+          className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow-md"
+          onClick={() => setIsEditing(true)}
+        >
+          Edit Profile
+        </button>
+      )}
+    </MotionCard>
+  );
+}
+
+//summary
+function SummarySection({ formData, displayOrder }) {
+  const MotionCard = motion.div;
+  if (!formData || !formData.name) {
+    return <p>Loading profile...</p>;
+  }
+  return (
+    <MotionCard
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: 0.1 }}
+      className="bg-white p-8 rounded-lg shadow-xl border border-gray-200"
+    >
+      <h2 className="text-2xl font-semibold mb-4 text-gray-600">Profile Summary</h2>
+      <div className="flex justify-center mb-6">
+        {/* <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center text-3xl text-blue-600 font-semibold">
+          {formData.name.split(' ').map(n => n[0]).join('')}
+        </div> */}
+      </div>
+      <p className="text-gray-500 mb-6 text-center">Trainer ID: <span className="font-semibold text-gray-700">{formData.id}</span></p>
+      <div className="space-y-4">
+        {displayOrder.map((key) => (
+          <div key={key} className="flex items-center py-2">
+            <IconSelector key={key} />
+            <span className="ml-4 text-gray-600">
+              <strong className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {formData[key] || 'N/A'}
+            </span>
+          </div>
+        ))}
+      </div>
+    </MotionCard>
+  );
+}
+// Select icon based on field type
+function IconSelector({ key }) {
+  switch (key) {
+    case 'name': return <User className="text-gray-400" />;
+    case 'email': return <Mail className="text-gray-400" />;
+    case 'contactNo': return <Phone className="text-gray-400" />;
+    case 'state': return <MapPin className="text-gray-400" />;
+    case 'dob': return <Calendar className="text-gray-400" />;
+    case 'sport': return <Dumbbell className="text-gray-400" />;
+    case 'achievements': return <Award className="text-gray-400" />;
+    default: return <User className="text-gray-400" />;
+  }
+}
+
+
 }

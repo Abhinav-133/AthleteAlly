@@ -10,7 +10,7 @@ export default function AthleteProfile() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",
-    phone: "",
+    contactNo: "",
     dob: "",
     state: "",
     sport: "",
@@ -66,7 +66,7 @@ export default function AthleteProfile() {
     }
   }
 
-  const displayOrder = ['name', 'email', 'phone', 'dob', 'sport', 'experience', 'gender', 'state', 'bio'];
+  const displayOrder = ['name', 'email', 'contactNo', 'dob', 'sport', 'experience', 'gender', 'state', 'bio'];
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 p-10">
@@ -210,7 +210,7 @@ function IconSelector({ key }) {
   switch (key) {
     case 'name': return <User className="text-gray-400" />;
     case 'email': return <Mail className="text-gray-400" />;
-    case 'phone': return <Phone className="text-gray-400" />;
+    case 'contactNo': return <Phone className="text-gray-400" />;
     case 'state': return <MapPin className="text-gray-400" />;
     case 'dob': return <Calendar className="text-gray-400" />;
     case 'sport': return <Dumbbell className="text-gray-400" />;

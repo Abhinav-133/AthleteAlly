@@ -2,15 +2,26 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Mail, Lock, Phone, User, Calendar, MapPin, FileText, BadgeCheck } from "lucide-react"; // Add appropriate icons
+import {
+  Loader2,
+  Mail,
+  Lock,
+  Phone,
+  User,
+  Calendar,
+  MapPin,
+  FileText,
+  BadgeCheck,
+} from "lucide-react";
 import { Button, TextField, Typography, Alert, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword,sendEmailVerification } from "firebase/auth";
+import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
-import { auth, db } from "../../../firebaseConfig";
+import { auth, db, storage } from "../../../firebaseConfig";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 const TrainersSignUp = () => {
-  const [step, setStep] = useState(1); // To track the form step
+  const [step, setStep] = useState(1);
   const [formData, setFormData] = useState({
     name: "",
     age: "",
@@ -24,17 +35,34 @@ const TrainersSignUp = () => {
     experience: "",
     contactNo: "",
     adharCard: "",
-    bio: "", // New bio field
+    bio: "",
+    valid: false,
+    id: "",
+    certification: null,
   });
 
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    if (
+      file &&
+      file.type === "application/pdf" &&
+      file.size <= 5 * 1024 * 1024
+    ) {
+      // 5MB limit
+      setFormData({ ...formData, certification: file });
+    } else {
+      setError("Please upload a valid PDF file under 5MB.");
+    }
+  };
+
   const handleNext = (event) => {
     event.preventDefault();
     setError(null);
-    // Add validation if necessary for step 1 before proceeding to step 2
+
     if (
       formData.name &&
       formData.age &&
@@ -54,22 +82,36 @@ const TrainersSignUp = () => {
     event.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
-      // Create user with Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
         auth,
         formData.email,
         formData.password
       );
-  
+
       const user = userCredential.user;
-  
-      // Send email verification
-      await sendEmailVerification(user);
-      alert('Verification email sent. Please check your inbox.');
-  
-      // Save user details to Firestore using the user's UID as the document ID
+
+      let certificationURL = "";
+      if (formData.certification) {
+        const certificationRef = ref(
+          storage,
+          `trainers/${user.uid}/certification.pdf`
+        );
+        await uploadBytes(certificationRef, formData.certification);
+        certificationURL = await getDownloadURL(certificationRef);
+      }
+
+      const generateFixedLengthId = () => {
+        const namePart = formData.name.slice(0, 3).padEnd(3, "X").toUpperCase();
+        const dobPart = formData.dob.replace(/-/g, "").slice(2, 8);
+        const randomPart = Math.random()
+          .toString(36)
+          .substring(2, 6)
+          .toUpperCase();
+        return `${namePart}${dobPart}${randomPart}`;
+      };
+
       await setDoc(doc(db, "trainers", user.uid), {
         name: formData.name,
         age: formData.age,
@@ -82,15 +124,15 @@ const TrainersSignUp = () => {
         experience: formData.experience,
         contactNo: formData.contactNo,
         adharCard: formData.adharCard,
-        bio: formData.bio, // Save bio in Firestore
+        bio: formData.bio,
+        resume: formData.resume ? formData.resume.name : "",
+        valid: formData.valid,
         createdAt: new Date().toISOString(),
+        id: generateFixedLengthId(),
+        certificationURL: certificationURL,
       });
-  
-      console.log("User signed up and details saved:", user);
-  
-      // Optionally navigate to a verification-pending page
-      navigate("/trainer-login"); 
-  
+
+      navigate("/trainer-login");
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("This email is already registered.");
@@ -101,11 +143,11 @@ const TrainersSignUp = () => {
       } else {
         setError("Failed to sign up. Please check your details.");
       }
-      console.error("Sign-up or Firestore error:", err.message);
     } finally {
       setLoading(false);
     }
   };
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -142,7 +184,6 @@ const TrainersSignUp = () => {
           </motion.div>
         )}
 
-        {/* Form Step 1: Basic Info */}
         {step === 1 && (
           <form onSubmit={handleNext} className="space-y-6">
             <div className="grid grid-cols-2 gap-6">
@@ -293,7 +334,6 @@ const TrainersSignUp = () => {
           </form>
         )}
 
-        {/* Form Step 2: Additional Info */}
         {step === 2 && (
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-2 gap-6">
@@ -376,6 +416,19 @@ const TrainersSignUp = () => {
               onChange={handleChange}
               className="bg-gray-700 text-white rounded-lg"
             />
+            <div>
+              <Typography variant="body1" className="text-white mb-2">
+                Upload Certification (PDF only)
+              </Typography>
+              <TextField
+                type="file"
+                fullWidth
+                onChange={handleFileChange}
+                inputProps={{ accept: "application/pdf" }}
+                className="bg-gray-700 text-white rounded-lg"
+              />
+            </div>
+
             <div className="flex justify-between items-center">
               <Button
                 onClick={() => setStep(1)}

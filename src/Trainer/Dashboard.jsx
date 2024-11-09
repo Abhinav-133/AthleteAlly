@@ -1,20 +1,26 @@
 "use client"
 
 import React, { useState } from "react"
+import { useNavigate } from "react-router-dom"
 import { motion } from "framer-motion"
-import { Menu, X, User, ShoppingBag, Trophy, Users, Dumbbell, Apple, LogOut, UserCircle } from "lucide-react"
+import { Menu, X, User, Trophy, Apple, LogOut, UserCircle } from "lucide-react"
 import { Outlet } from "react-router-dom"
 
 const Sidebar = ({ isOpen, toggleSidebar }) => {
+  const navigate = useNavigate()
+
   const menuItems = [
-    { icon: User, label: "My Profile",link:"/trainers-dashboard/profile" },
-    { icon: UserCircle, label: "Athlete Profile",link:"/trainers-dashboard/athletes" },
-    // { icon: ShoppingBag, label: "Sports Gear",link:"/trainers/sportsgear" },
-    { icon: Trophy, label: "Tournaments",link:"/trainers-dashboard/tournaments" },
-    // { icon: Users, label: "Job Portals",link:"/trainers/jobportal" },
-    // { icon: Dumbbell, label: "Latest News",link:"/trainers-dashboard/latestnews" },
-    { icon: Apple, label: "Community",link:"/trainers-dashboard/community" },
+    { icon: User, label: "My Profile", link: "/trainers-dashboard/profile" },
+    { icon: UserCircle, label: "Athlete Profile", link: "/trainers-dashboard/athletes" },
+    { icon: Trophy, label: "Tournaments", link: "/trainers-dashboard/tournaments" },
+    // { icon: Trophy, label: "Tournaments", link: "/trainers-dashboard/tournaments" },
   ]
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("userUid")
+    navigate("/") 
+  }
+  
 
   return (
     <motion.div
@@ -25,7 +31,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       animate={{ width: isOpen ? 256 : 80 }}
     >
       <div className="flex justify-between items-center mb-10">
-        <h2 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>SportsHub</h2>
+        <h2 className={`text-xl font-bold ${isOpen ? "block" : "hidden"}`}>AthleteAlly</h2>
         <button
           onClick={toggleSidebar}
           className="p-2 rounded-full hover:bg-gray-800 transition-colors"
@@ -50,7 +56,10 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         </ul>
       </nav>
       <div className="absolute bottom-5 left-0 w-full px-5">
-        <button className="flex items-center p-2 rounded-lg hover:bg-gray-800 transition-colors w-full">
+        <button
+          onClick={handleLogout}
+          className="flex items-center p-2 rounded-lg hover:bg-gray-800 transition-colors w-full"
+        >
           <LogOut size={24} className="mr-4" />
           <span className={isOpen ? "block" : "hidden"}>Logout</span>
         </button>
@@ -75,7 +84,7 @@ export default function TrainersPage() {
         }`}
       >
         <main className="p-8">
-          <Outlet/>
+          <Outlet />
         </main>
       </div>
     </div>
