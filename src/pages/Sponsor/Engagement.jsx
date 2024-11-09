@@ -1,5 +1,15 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "./Sidebar";
+import { db } from "../../firebaseConfig";
+import { collection, getDocs } from "firebase/firestore";
+
+const engagementTypes = [
+  "Guest Appearance",
+  "Commercial Shoot",
+  "Social Media Promotion",
+  "Charity Event",
+  "Product Launch",
+];
 
 const SponsorEngagementPage = () => {
   const [selectedEntity, setSelectedEntity] = useState("");
@@ -7,62 +17,73 @@ const SponsorEngagementPage = () => {
   const [message, setMessage] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [showTip, setShowTip] = useState(false);
+  const [teams, setTeams] = useState([]);
+  const [athletes, setAthletes] = useState([]);
+  const [sponsoredEntities, setSponsoredEntities] = useState([]);
 
-  const sponsoredEntities = [
-    {
-      id: 1,
-      name: "New York Knicks",
-      type: "Team",
-      logo: "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/knicks-logo-JBPcFGxcWvHwfbVUGi9LS4xSdDwJVt.png",
-    },
-    {
-      id: 2,
-      name: "Manchester United",
-      type: "Team",
-      logo: "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/man-utd-logo-5Vn8Qd3OBNTFHUe1POWVqIZmRxpDbg.png",
-    },
-    {
-      id: 3,
-      name: "Los Angeles Dodgers",
-      type: "Team",
-      logo: "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/dodgers-logo-5TP8hB3OBNTFHUe1POWVqIZmRxpDbg.png",
-    },
-    {
-      id: 4,
-      name: "John Doe",
-      type: "Athlete",
-      image:
-        "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/player1-2wQXCDm1yQEvTHds0fYgxnIgLqQZPm.jpg",
-    },
-    {
-      id: 5,
-      name: "Jane Smith",
-      type: "Athlete",
-      image:
-        "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/player2-5Vn8Qd3OBNTFHUe1POWVqIZmRxpDbg.jpg",
-    },
-    {
-      id: 6,
-      name: "Mike Johnson",
-      type: "Athlete",
-      image:
-        "https://public.blob.vercel-storage.com/eEZHAoPTOBSYGBE3/player3-5TP8hB3OBNTFHUe1POWVqIZmRxpDbg.jpg",
-    },
-  ];
+  const fetchTeamsData = async () => {
+    try {
+      const teamsCollection = collection(db, "teams");
+      const teamsSnapshot = await getDocs(teamsCollection);
+      const teamsList = teamsSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
 
-  const engagementTypes = [
-    "Guest Appearance",
-    "Commercial Shoot",
-    "Social Media Promotion",
-    "Charity Event",
-    "Product Launch",
-  ];
+      setTeams(teamsList);
+      console.log("Fetched Teams data:", teamsList);
+    } catch (error) {
+      console.error("Error fetching Tournaments data:", error);
+    }
+  };
+
+  const fetchAthletesData = async () => {
+    try {
+      const athletesCollection = collection(db, "athletes");
+      const athleteSnapshot = await getDocs(athletesCollection);
+      const athletesList = athleteSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+
+      setAthletes(athletesList);
+      console.log("Fetched athletes data:", athletesList);
+    } catch (error) {
+      console.error("Error fetching athletes data:", error);
+    }
+  };
+
+  const setRightData = () => {
+    teams.map((team) => {
+      const obj1 = {
+        name: team.teamName,
+        type: "Team",
+        logo: team.image,
+        email: team.email,
+      };
+      setSponsoredEntities((prev) => [...prev, obj1]);
+    });
+
+    athletes.map((athlete) => {
+      const obj2 = {
+        name: athlete.name,
+        type: "Athlete",
+        logo: athlete.image,
+        email: athlete.email,
+      };
+      setSponsoredEntities((prev) => [...prev, obj2]);
+    });
+  };
 
   useEffect(() => {
-    const tipTimer = setTimeout(() => setShowTip(true), 3000);
-    return () => clearTimeout(tipTimer);
+    fetchTeamsData();
+    fetchAthletesData();
   }, []);
+
+  useEffect(() => {
+    setRightData();
+    // console.log(sponsoredEntities);
+  }, [athletes, teams]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -224,15 +245,6 @@ const SponsorEngagementPage = () => {
             )}
           </div>
         </div>
-        {showTip && (
-          <div className="mt-8 bg-blue-100 border-l-4 border-blue-500 text-blue-700 p-4 rounded animate-fade-in-up">
-            <p className="font-bold">Tip:</p>
-            <p>
-              Personalize your message to strengthen your relationship with the
-              team or athlete!
-            </p>
-          </div>
-        )}
       </div>
     </div>
   );
