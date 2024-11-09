@@ -31,6 +31,7 @@ import TrainerProfilePage from "./Trainer/TrainerProfile";
 import AthletesListPage from "./Trainer/atheletesl";
 import CommunityPage from "./Trainer/communitytrainer";
 import SponsorSignup from "./components/auth/sponsors/SponsorSignUp";
+
 // import Tournament from "./Trainer/Tournaments";
 import SingleTournament from "./components/SingleTournament";
 import AthleteTournaments from "./components/Athlete Dashboard/AthleteTournaments";
@@ -50,17 +51,23 @@ const router = createBrowserRouter(
         <Route path="/athlete-dashboard" element={<Index />} />
         <Route path="/athlete-dashboard/profile" element={<AthleteProfile />} />
         <Route path="/athlete-dashboard/sportsgear" element={<SportsGear />} />
-        <Route path="/athlete-dashboard/mytournaments" element={<AthleteTournaments/>}/>
+        <Route
+          path="/athlete-dashboard/mytournaments"
+          element={<AthleteTournaments />}
+        />
         <Route
           path="/athlete-dashboard/tournaments"
           element={<Tournaments />}
         />
         <Route path="/athlete-dashboard/jobs" element={<JobPortal />} />
         <Route path="/athlete-dashboard/news" element={<LatestNews />} />
-        <Route path="/athlete-dashboard/alltrainers" element={<AllTrainers/>}/>
+        <Route
+          path="/athlete-dashboard/alltrainers"
+          element={<AllTrainers />}
+        />
       </Route>
-      <Route path="/tournament" element={<SingleTournament/>}/>
-      <Route path="/team-register" element={<TeamRegisterPage/>}/>
+      <Route path="/tournament" element={<SingleTournament />} />
+      <Route path="/team-register" element={<TeamRegisterPage />} />
 
       {/* Trainers */}
       <Route path="/trainer-login" element={<TrainersSignIn />} />
@@ -100,9 +107,7 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return (
-      <RouterProvider router={router} />
-  );
+  return <RouterProvider router={router} />;
 }
 
 export default App;
