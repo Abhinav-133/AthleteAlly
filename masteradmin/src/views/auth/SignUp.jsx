@@ -1,97 +1,118 @@
 import { useState } from "react";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import { doc, setDoc } from "firebase/firestore"; 
+import { doc, setDoc } from "firebase/firestore";
 import InputField from "components/fields/InputField";
-import { db, auth } from "../../firebaseConfig";
+import { auth, db } from "../../firebaseConfig";
 
 export default function SignUp() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [dob, setDob] = useState("");
+  const [error, setError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
   const handleSignUp = async (e) => {
     e.preventDefault();
 
-    if (password !== confirmPassword) {
-      setError("Passwords do not match");
-      return;
-    }
-
     try {
-      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
-      const user = userCredential.user;
-
-      // Store user information in the masteradmin collection
-      await setDoc(doc(db, "masteradmin", user.uid), {
-        email: user.email,
-        createdAt: new Date(),
-        uid: user.uid
+      console.log(email);
+      console.log(password);
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        password
+      );
+      const userId = userCredential.user.uid;
+      await setDoc(doc(db, "masteradmin", userId), {
+        email,
       });
 
-      setError(null); // Clear any previous errors
-      console.log("User signed up and added to masteradmin collection:", user);
-
-      // Redirect or further actions after successful sign-up
-    } catch (error) {
-      console.error("Error signing up:", error);
-      setError(error.message);
+      setSuccessMessage("Admin account created successfully!");
+      setTimeout(() => setSuccessMessage(""), 5000);
+    } catch (err) {
+      setError("Error during sign-up: " + err.message);
     }
   };
 
   return (
-    <div className="mt-16 mb-16 flex h-full w-full items-center justify-center px-2 md:mx-0 md:px-0 lg:mb-10 lg:items-center lg:justify-start">
-      {/* Sign up section */}
-      <div className="mt-[10vh] w-full max-w-full flex-col items-center md:pl-4 lg:pl-0 xl:max-w-[420px]">
-        <h4 className="mb-2.5 text-4xl font-bold text-navy-700 dark:text-white">
+    <div className="flex h-screen items-center px-4 py-8">
+      <div className="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+        <h4 className="text-4xl font-bold text-center text-navy-700 dark:text-white mb-6">
           Sign Up
         </h4>
-        <p className="mb-9 ml-1 text-base text-gray-600">
-          Enter your details to create an account!
+        <p className="text-gray-600 text-center mb-8">
+          Create an admin account!
         </p>
 
-        {error && <p className="mb-4 text-red-500">{error}</p>}
-
-        <form onSubmit={handleSignUp}>
-          <InputField
+        {/* Email Input */}
+        <div className="mb-4">
+          <label htmlFor="email" className="block text-gray-700 font-medium mb-2">
+            Email*
+          </label>
+          <input
             variant="auth"
-            extra="mb-3"
-            label="Email*"
-            placeholder="mail@simmmple.com"
             id="email"
-            type="text"
+            type="email"
+            placeholder="mail@simmmple.com"
             value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            onChange={(e) => {
+              console.log("Email input changed:", e.target.value);
+              setEmail(e.target.value);
+            }}
+            className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
+        </div>
 
-          {/* Password */}
-          <InputField
+        {/* Password Input */}
+        <div className="mb-4">
+          <label htmlFor="password" className="block text-gray-700 font-medium mb-2">
+            Password*
+          </label>
+          <input
             variant="auth"
-            extra="mb-3"
-            label="Password*"
-            placeholder="Min. 8 characters"
             id="password"
             type="password"
+            placeholder="Enter your password"
             value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => {
+              console.log("Password input changed:", e.target.value);
+              setPassword(e.target.value);
+            }}
+            className="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
           />
+        </div>
 
-          {/* Confirm Password */}
+        {/* Date of Birth Input */}
+        <div className="mb-6">
+          <label htmlFor="dob" className="block text-gray-700 font-medium mb-2">
+            Date of Birth*
+          </label>
           <InputField
             variant="auth"
-            extra="mb-3"
-            label="Confirm Password*"
-            placeholder="Confirm your password"
-            id="confirm-password"
-            type="password"
-            value={confirmPassword}
-            onChange={(e) => setConfirmPassword(e.target.value)}
+            extra="w-full px-4 py-2 border rounded-md text-gray-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            label="Date of Birth*"
+            id="dob"
+            type="date"
+            value={dob}
+            onChange={(e) => setDob(e.target.value)}
           />
+        </div>
 
-          <button type="submit" className="linear mt-2 w-full rounded-xl bg-brand-500 py-[12px] text-base font-medium text-white transition duration-200 hover:bg-brand-600 active:bg-brand-700 dark:bg-brand-400 dark:text-white dark:hover:bg-brand-300 dark:active:bg-brand-200">
-            Sign Up
-          </button>
-        </form>
+        {/* Error Message */}
+        {error && <p className="text-sm text-red-500 mb-4">{error}</p>}
+
+        {/* Success Message */}
+        {successMessage && (
+          <p className="text-sm text-green-500 mb-4">{successMessage}</p>
+        )}
+
+        {/* Submit Button */}
+        <button
+          onClick={handleSignUp}
+          className="w-full py-2 bg-brand-500 text-white font-semibold rounded-md shadow-sm hover:bg-brand-600 active:bg-brand-700 transition duration-200"
+        >
+          Sign Up
+        </button>
       </div>
     </div>
   );

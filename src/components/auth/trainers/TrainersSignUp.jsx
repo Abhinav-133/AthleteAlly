@@ -39,6 +39,7 @@ const TrainersSignUp = () => {
     valid: false,
     id: "",
     certification: null,
+    trainerID:""
   });
 
   const [error, setError] = useState(null);
@@ -130,6 +131,7 @@ const TrainersSignUp = () => {
         createdAt: new Date().toISOString(),
         id: generateFixedLengthId(),
         certificationURL: certificationURL,
+        trainerID:generateFixedLengthId()
       });
 
       navigate("/trainer-login");

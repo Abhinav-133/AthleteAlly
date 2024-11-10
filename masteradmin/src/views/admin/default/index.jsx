@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { db } from "../../../firebaseConfig"; // Import your Firebase config
-import { collection, getDocs, where, Timestamp } from "firebase/firestore"; // Import Firestore functions
+import { db } from "../../../firebaseConfig"; 
+import { collection, getDocs, where, Timestamp } from "firebase/firestore"; 
 import WeeklyRevenue from "views/admin/default/components/WeeklyRevenue";
 import TotalSpent from "views/admin/default/components/TotalSpent";
 import PieChartCard from "views/admin/default/components/PieChartCard";

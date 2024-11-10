@@ -2,10 +2,23 @@
 
 import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { Loader2, Mail, Lock, Phone, User, Calendar, MapPin, FileText, BadgeCheck } from "lucide-react"; // Add appropriate icons
+import {
+  Loader2,
+  Mail,
+  Lock,
+  Phone,
+  User,
+  Calendar,
+  MapPin,
+  FileText,
+  BadgeCheck,
+} from "lucide-react"; // Add appropriate icons
 import { Button, TextField, Typography, Alert, MenuItem } from "@mui/material";
 import { useNavigate } from "react-router-dom";
-import { createUserWithEmailAndPassword,sendEmailVerification } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  sendEmailVerification,
+} from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { auth, db } from "../../../firebaseConfig";
 
@@ -24,7 +37,8 @@ const AthleteSignUp = () => {
     experience: "",
     contactNo: "",
     adharCard: "",
-    bio: "", // New bio field
+    bio: "",
+    canParticipate: true,
   });
 
   const [error, setError] = useState(null);
@@ -34,7 +48,6 @@ const AthleteSignUp = () => {
   const handleNext = (event) => {
     event.preventDefault();
     setError(null);
-    // Add validation if necessary for step 1 before proceeding to step 2
     if (
       formData.name &&
       formData.age &&
@@ -54,7 +67,7 @@ const AthleteSignUp = () => {
     event.preventDefault();
     setLoading(true);
     setError(null);
-  
+
     try {
       // Create user with Firebase Auth
       const userCredential = await createUserWithEmailAndPassword(
@@ -62,23 +75,26 @@ const AthleteSignUp = () => {
         formData.email,
         formData.password
       );
-  
+
       const user = userCredential.user;
-  
+
       // Send email verification
       await sendEmailVerification(user);
-      alert('Verification email sent. Please check your inbox.');
-  
+      alert("Verification email sent. Please check your inbox.");
+
       // Generate a fixed-length ID
       const generateFixedLengthId = () => {
-        const namePart = formData.name.slice(0, 3).padEnd(3, 'X').toUpperCase();
+        const namePart = formData.name.slice(0, 3).padEnd(3, "X").toUpperCase();
         const dobPart = formData.dob.replace(/-/g, "").slice(2, 8); // Gets YYMMDD format
-        const randomPart = Math.random().toString(36).substring(2, 6).toUpperCase(); // 4 random alphanumeric characters
+        const randomPart = Math.random()
+          .toString(36)
+          .substring(2, 6)
+          .toUpperCase(); // 4 random alphanumeric characters
         return `${namePart}${dobPart}${randomPart}`;
       };
-  
+
       const athleteId = generateFixedLengthId();
-  
+
       // Save user details to Firestore using the user's UID as the document ID
       await setDoc(doc(db, "athletes", user.uid), {
         name: formData.name,
@@ -94,14 +110,13 @@ const AthleteSignUp = () => {
         adharCard: formData.adharCard,
         bio: formData.bio,
         createdAt: new Date().toISOString(),
-        id: athleteId, // Store the generated fixed-length ID
+        id: athleteId,
+        canParticipate: formData.canParticipate,
       });
-  
+
       console.log("User signed up and details saved:", user);
-  
-      // Optionally navigate to a verification-pending page
+
       navigate("/athlete-login");
-  
     } catch (err) {
       if (err.code === "auth/email-already-in-use") {
         setError("This email is already registered.");
@@ -117,7 +132,7 @@ const AthleteSignUp = () => {
       setLoading(false);
     }
   };
-  
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
