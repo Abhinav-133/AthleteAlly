@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ChevronRight, MapPin, Calendar, Users, Plus } from "lucide-react";
 import { db } from "../../../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc } from "firebase/firestore";
 
 export default function Athletes() {
   const [athletes, setAthletes] = useState([]);
@@ -17,6 +17,32 @@ export default function Athletes() {
     };
     fetchAthletes();
   }, []);
+
+  // Function to toggle 'valid' status
+  const handleValidToggle = async (athleteId, currentStatus) => {
+    const athleteRef = doc(db, "athletes", athleteId);
+    await updateDoc(athleteRef, {
+      valid: !currentStatus,
+    });
+    setAthletes((prev) =>
+      prev.map((athlete) =>
+        athlete.id === athleteId ? { ...athlete, valid: !currentStatus } : athlete
+      )
+    );
+  };
+
+  // Function to toggle 'canParticipate' status
+  const handleParticipationToggle = async (athleteId, currentStatus) => {
+    const athleteRef = doc(db, "athletes", athleteId);
+    await updateDoc(athleteRef, {
+      canParticipate: !currentStatus,
+    });
+    setAthletes((prev) =>
+      prev.map((athlete) =>
+        athlete.id === athleteId ? { ...athlete, canParticipate: !currentStatus } : athlete
+      )
+    );
+  };
 
   return (
     <div className="bg-[rgba(255,255,255,0.1)] min-h-screen bg-gradient-to-br">
@@ -40,6 +66,26 @@ export default function Athletes() {
               <p className="text-gray-600 flex items-center mb-2">
                 <Users className="mr-1" /> Experience: {athlete.experience} years
               </p>
+              <div className="mt-4 flex gap-4">
+                <button
+                  onClick={() => handleValidToggle(athlete.id, athlete.valid)}
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    athlete.valid ? "bg-green-500" : "bg-red-500"
+                  }`}
+                >
+                  {athlete.valid ? "Verified" : "Not Verified"}
+                </button>
+                <button
+                  onClick={() =>
+                    handleParticipationToggle(athlete.id, athlete.canParticipate)
+                  }
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    athlete.canParticipate ? "bg-blue-500" : "bg-gray-500"
+                  }`}
+                >
+                  {athlete.canParticipate ? "Can Participate" : "Cannot Participate"}
+                </button>
+              </div>
             </div>
           ))}
         </div>

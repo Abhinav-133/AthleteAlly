@@ -39,6 +39,7 @@ const AthleteSignUp = () => {
     adharCard: "",
     bio: "",
     canParticipate: true,
+    valid:true,
   });
 
   const [error, setError] = useState(null);
@@ -95,7 +96,6 @@ const AthleteSignUp = () => {
 
       const athleteId = generateFixedLengthId();
 
-      // Save user details to Firestore using the user's UID as the document ID
       await setDoc(doc(db, "athletes", user.uid), {
         name: formData.name,
         age: formData.age,
@@ -112,6 +112,7 @@ const AthleteSignUp = () => {
         createdAt: new Date().toISOString(),
         id: athleteId,
         canParticipate: formData.canParticipate,
+        valid:formData.valid,
       });
 
       console.log("User signed up and details saved:", user);

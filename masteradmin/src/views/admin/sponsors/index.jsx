@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { MapPin, Phone, Globe } from "lucide-react";
 import { db } from "../../../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, updateDoc, doc, getDoc } from "firebase/firestore";
 
 export default function Sponsors() {
   const [sponsors, setSponsors] = useState([]);
@@ -17,6 +17,27 @@ export default function Sponsors() {
     };
     fetchSponsors();
   }, []);
+
+  // Function to toggle 'valid' status for sponsors
+  const handleValidToggle = async (sponsorId, currentStatus) => {
+    const sponsorRef = doc(db, "sponsors", sponsorId);
+
+    // Check if the document exists before updating
+    const sponsorDoc = await getDoc(sponsorRef);
+    if (!sponsorDoc.exists()) {
+      console.error("No document found with ID:", sponsorId);
+      return;
+    }
+
+    await updateDoc(sponsorRef, {
+      valid: !currentStatus,
+    });
+    setSponsors((prev) =>
+      prev.map((sponsor) =>
+        sponsor.id === sponsorId ? { ...sponsor, valid: !currentStatus } : sponsor
+      )
+    );
+  };
 
   return (
     <div className="bg-[rgba(255,255,255,0.1)] min-h-screen bg-gradient-to-br">
@@ -38,6 +59,18 @@ export default function Sponsors() {
                 <Globe className="mr-1" /> <a href={sponsor.website} target="_blank" rel="noopener noreferrer" className="text-blue-500">{sponsor.website}</a>
               </p>
               <p className="text-gray-600 mb-2">Bio: {sponsor.bio}</p>
+
+              {/* Valid/Invalid Button */}
+              <div className="mt-4 flex gap-4">
+                <button
+                  onClick={() => handleValidToggle(sponsor.id, sponsor.valid)}
+                  className={`px-4 py-2 rounded-lg text-white ${
+                    sponsor.valid ? "bg-green-500" : "bg-red-500"
+                  }`}
+                >
+                  {sponsor.valid ? "Valid" : "Invalid"}
+                </button>
+              </div>
             </div>
           ))}
         </div>

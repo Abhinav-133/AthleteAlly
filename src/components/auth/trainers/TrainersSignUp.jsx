@@ -126,7 +126,6 @@ const TrainersSignUp = () => {
         contactNo: formData.contactNo,
         adharCard: formData.adharCard,
         bio: formData.bio,
-        resume: formData.resume ? formData.resume.name : "",
         valid: formData.valid,
         createdAt: new Date().toISOString(),
         id: generateFixedLengthId(),
