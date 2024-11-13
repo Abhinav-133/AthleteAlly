@@ -81,13 +81,11 @@ export default function AthleteProfile() {
           displayOrder={displayOrder} 
         />
         <SummarySection formData={formData} displayOrder={displayOrder} />
-        <AdditionalSections />
       </div>
     </div>
   );
 }
 
-// Profile information form component
 function ProfileSection({ isEditing, setIsEditing, formData, handleChange, onSubmit, displayOrder }) {
   const MotionCard = motion.div;
 
@@ -152,7 +150,6 @@ function ProfileSection({ isEditing, setIsEditing, formData, handleChange, onSub
   );
 }
 
-// Summary section of profile
 function SummarySection({ formData, displayOrder }) {
   const MotionCard = motion.div;
 
@@ -181,27 +178,6 @@ function SummarySection({ formData, displayOrder }) {
         ))}
       </div>
     </MotionCard>
-  );
-}
-
-// Component for contact info, trainers, and tournaments
-function AdditionalSections() {
-  return (
-    <div className="space-y-8 lg:row-span-1">
-      {/* <ContactInfo />
-      <Tournaments /> */}
-    </div>
-  );
-}
-
-// Component for Tournaments
-function Tournaments() {
-  return (
-    <div className="bg-white p-8 rounded-lg shadow-xl border border-gray-200">
-      <h3 className="text-xl font-semibold mb-4 text-gray-600">Your Tournaments</h3>
-      <p>Tournament 1 - Date</p>
-      <p>Tournament 2 - Date</p>
-    </div>
   );
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
-import { doc, updateDoc, getDocs, collection } from "firebase/firestore";
+import { doc, updateDoc, getDocs, getDoc, collection } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { motion } from "framer-motion";
 import {
@@ -14,10 +14,26 @@ import {
 
 export default function AllTrainers() {
   const [trainers, setTrainers] = useState([]);
-  const [selectedTrainer, setSelectedTrainer] = useState(null); // To manage the selected trainer for the modal
-  const [openModal, setOpenModal] = useState(false); // To control the modal visibility
+  const [selectedTrainer, setSelectedTrainer] = useState(null);
+  const [openModal, setOpenModal] = useState(false);
+  const [confirmModalOpen, setConfirmModalOpen] = useState(false);
+  const [athleteSport, setAthleteSport] = useState(null); // Store athlete's sport
+
+  const userUid = sessionStorage.getItem("userUid");
 
   useEffect(() => {
+    const fetchAthleteSport = async () => {
+      try {
+        const athleteRef = doc(db, "athletes", userUid);
+        const athleteSnap = await getDoc(athleteRef);
+        if (athleteSnap.exists()) {
+          setAthleteSport(athleteSnap.data().sport);
+        }
+      } catch (error) {
+        console.error("Error fetching athlete data:", error);
+      }
+    };
+
     const fetchTrainers = async () => {
       try {
         const querySnapshot = await getDocs(collection(db, "trainers"));
@@ -27,42 +43,49 @@ export default function AllTrainers() {
         }));
         setTrainers(trainersData);
       } catch (error) {
-        console.error("Error fetching trainers: ", error);
+        console.error("Error fetching trainers:", error);
       }
     };
 
+    fetchAthleteSport();
     fetchTrainers();
-  }, []);
+  }, [userUid]);
 
-  const userUid = sessionStorage.getItem("userUid");
-
-  const handleEnroll = async (trainerId) => {
+  const handleEnroll = async () => {
     try {
-      const athleteRef = doc(db, "athletes", userUid); // Reference to the athlete's document
-
-      // Update athlete's document with trainerId
+      const athleteRef = doc(db, "athletes", userUid);
       await updateDoc(athleteRef, {
-        trainerId: trainerId,
+        trainerId: selectedTrainer.id,
       });
-
       alert("Successfully enrolled with trainer!");
+      setConfirmModalOpen(false);
     } catch (error) {
       console.error("Error enrolling:", error);
       alert("Failed to enroll. Please try again.");
     }
   };
 
-  // Function to open the modal with trainer details
-  const handleAboutClick = (trainer) => {
-    setSelectedTrainer(trainer); // Set the selected trainer
-    setOpenModal(true); // Open the modal
+  const handleEnrollClick = (trainer) => {
+    setSelectedTrainer(trainer);
+    setConfirmModalOpen(true);
   };
 
-  // Function to close the modal
-  const handleCloseModal = () => {
-    setOpenModal(false); // Close the modal
-    setSelectedTrainer(null); // Clear the selected trainer
+  const handleAboutClick = (trainer) => {
+    setSelectedTrainer(trainer);
+    setOpenModal(true);
   };
+
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setSelectedTrainer(null);
+  };
+
+  const handleCloseConfirmModal = () => {
+    setConfirmModalOpen(false);
+    setSelectedTrainer(null);
+  };
+
+  const filteredTrainers = trainers.filter((trainer) => trainer.sport === athleteSport);
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-900 p-8">
@@ -70,8 +93,8 @@ export default function AllTrainers() {
         Meet Our Professional Trainers
       </h1>
 
-      {trainers.length === 0 ? (
-        <p className="text-center text-gray-500 mt-8">No trainers found.</p>
+      {filteredTrainers.length === 0 ? (
+        <p className="text-center text-gray-500 mt-8">No trainers found for your sport.</p>
       ) : (
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
@@ -79,7 +102,7 @@ export default function AllTrainers() {
           animate={{ opacity: 1 }}
           transition={{ duration: 0.5 }}
         >
-          {trainers.map((trainer) => (
+          {filteredTrainers.map((trainer) => (
             <motion.div
               key={trainer.id}
               className="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition transform hover:scale-105"
@@ -108,13 +131,12 @@ export default function AllTrainers() {
                 </p>
               </div>
               <button
-                onClick={() => handleEnroll(trainer.id)}
+                onClick={() => handleEnrollClick(trainer)}
                 className="mt-4 w-1/2 bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300"
               >
                 Enroll
               </button>
 
-              {/* About button */}
               <button
                 onClick={() => handleAboutClick(trainer)}
                 className="mt-2 w-1/2 bg-gray-500 text-white py-2 rounded-lg hover:bg-gray-600 transition duration-300"
@@ -126,30 +148,43 @@ export default function AllTrainers() {
         </motion.div>
       )}
 
-      {/* Modal for trainer details */}
-      <Dialog open={openModal} onClose={handleCloseModal}>
-        <DialogTitle>About {selectedTrainer?.name}</DialogTitle>
-        <DialogContent>
-          <p>
-            <strong>Experience:</strong> {selectedTrainer?.experience} years
-          </p>
-          <p>
-            <strong>Location:</strong> {selectedTrainer?.district}
-          </p>
-          <p>
-            <strong>Email:</strong> {selectedTrainer?.email}
-          </p>
-          <p>
-            <strong>State:</strong> {selectedTrainer?.state}
-          </p>
-          <p>
-            <strong>About:</strong>{" "}
-            {selectedTrainer?.bio || "No additional information available."}
-          </p>
+      {/* About Modal */}
+      <Dialog open={openModal} onClose={handleCloseModal} maxWidth="md" fullWidth>
+        <DialogTitle style={{ textAlign: "center", fontWeight: "bold", fontSize: "1.5rem" }}>
+          About {selectedTrainer?.name}
+        </DialogTitle>
+        <DialogContent style={{ padding: "20px 40px", color: "#4a4a4a" }}>
+          <p><strong>Experience:</strong> {selectedTrainer?.experience} years</p>
+          <p><strong>Location:</strong> {selectedTrainer?.district}</p>
+          <p><strong>Email:</strong> {selectedTrainer?.email}</p>
+          <p><strong>State:</strong> {selectedTrainer?.state}</p>
+          <p><strong>About:</strong> {selectedTrainer?.bio || "No additional information available."}</p>
         </DialogContent>
         <DialogActions>
-          <Button onClick={handleCloseModal} color="primary">
+          <Button onClick={handleCloseModal} variant="contained" color="primary">
             Close
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Confirmation Modal */}
+      <Dialog open={confirmModalOpen} onClose={handleCloseConfirmModal} maxWidth="md" fullWidth>
+        <DialogTitle style={{ textAlign: "center", fontWeight: "bold", fontSize: "1.5rem" }}>
+          Are you sure you want to enroll with {selectedTrainer?.name}?
+        </DialogTitle>
+        <DialogContent style={{ padding: "20px 40px", color: "#4a4a4a" }}>
+          <p><strong>Experience:</strong> {selectedTrainer?.experience} years</p>
+          <p><strong>Location:</strong> {selectedTrainer?.district}</p>
+          <p><strong>Email:</strong> {selectedTrainer?.email}</p>
+          <p><strong>State:</strong> {selectedTrainer?.state}</p>
+          <p><strong>About:</strong> {selectedTrainer?.bio || "No additional information available."}</p>
+        </DialogContent>
+        <DialogActions style={{ justifyContent: "center" }}>
+          <Button onClick={handleEnroll} variant="contained" color="primary">
+            Confirm
+          </Button>
+          <Button onClick={handleCloseConfirmModal} variant="outlined" color="secondary">
+            Cancel
           </Button>
         </DialogActions>
       </Dialog>

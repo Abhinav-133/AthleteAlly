@@ -80,7 +80,6 @@ export default function HomePage() {
   };
 
   const fetchNews = async () => {
-    console.log(newsUrl);
     let response = await fetch(newsUrl);
     response = await response.json();
 
@@ -114,7 +113,6 @@ export default function HomePage() {
       });
 
       setTournaments(formattedTournaments.slice(0, 3));
-      console.log(tournaments);
     };
     fetchTournaments();
   }, []);
