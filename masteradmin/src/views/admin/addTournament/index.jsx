@@ -6,8 +6,8 @@ import {
   UserGroupIcon,
   TrophyIcon,
 } from "@heroicons/react/24/outline";
-import {db} from "../../../firebaseConfig"
-import { collection, addDoc } from "firebase/firestore"; 
+import { db } from "../../../firebaseConfig";
+import { collection, addDoc } from "firebase/firestore";
 
 const sportsList = [
   "Football",
@@ -30,7 +30,7 @@ export default function AddTournament() {
     organizer: "",
     participants: "",
     teamSize: "",
-    sport: [],
+    sport: "", // Store as a single string
     prizePool: "",
   });
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -46,16 +46,14 @@ export default function AddTournament() {
   const handleSportToggle = (sport) => {
     setFormData((prevData) => ({
       ...prevData,
-      sport: prevData.sport.includes(sport)
-        ? prevData.sport.filter((s) => s !== sport)
-        : [...prevData.sport, sport],
+      sport: prevData.sport === sport ? "" : sport, // Set to single sport or empty
     }));
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await addDoc(collection(db, "tournaments"), formData); 
+      await addDoc(collection(db, "tournaments"), formData);
       alert("Tournament registered successfully!");
       setFormData({
         name: "",
@@ -129,7 +127,6 @@ export default function AddTournament() {
                 />
               </div>
             </div>
-
 
             <div className="relative">
               <label
@@ -224,9 +221,7 @@ export default function AddTournament() {
               >
                 <span className="flex items-center justify-between">
                   <span>
-                    {formData.sport.length > 0
-                      ? formData.sport.join(", ")
-                      : "Choose sports"}
+                    {formData.sport || "Choose sport"}
                   </span>
                   <ChevronDownIcon
                     className="w-6 h-6 text-gray-500"
@@ -240,7 +235,7 @@ export default function AddTournament() {
                     <div
                       key={sport}
                       className={`${
-                        formData.sport.includes(sport)
+                        formData.sport === sport
                           ? "bg-indigo-100 text-indigo-900"
                           : "text-gray-900"
                       } px-6 py-4 cursor-pointer hover:bg-indigo-50`}
@@ -266,19 +261,21 @@ export default function AddTournament() {
                 type="text"
                 required
                 className="mt-2 block w-full px-4 py-4 border border-gray-300 rounded-lg text-xl text-gray-900 placeholder-gray-500 focus:outline-none shadow-sm"
-                placeholder="Enter prize pool amount"
+                placeholder="Enter prize pool"
                 value={formData.prizePool}
                 onChange={handleChange}
               />
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="w-full px-6 py-4 mt-8 text-lg font-medium text-white bg-indigo-600 rounded-lg shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-500"
-          >
-            Submit Tournament
-          </button>
+          <div className="flex justify-center mt-8">
+            <button
+              type="submit"
+              className="px-8 py-4 bg-indigo-600 text-white text-xl font-medium rounded-lg shadow-xl hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              Register Tournament
+            </button>
+          </div>
         </form>
       </div>
     </div>

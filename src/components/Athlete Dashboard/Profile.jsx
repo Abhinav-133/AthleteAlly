@@ -1,12 +1,26 @@
-'use client'
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { User, Mail, Phone, MapPin, Calendar, Dumbbell, Award } from 'lucide-react';
-import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
+import React, { useState, useEffect } from "react";
+import { motion } from "framer-motion";
+import {
+  User,
+  Mail,
+  Phone,
+  MapPin,
+  Calendar,
+  Dumbbell,
+  Award,
+  Edit3,
+} from "lucide-react";
+import {
+  getFirestore,
+  doc,
+  getDoc,
+  getDocs,
+  collection,
+} from "firebase/firestore";
 
 export default function AthleteProfile() {
-  const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -18,162 +32,116 @@ export default function AthleteProfile() {
     bio: "",
     experience: "",
     gender: "",
-    id:""
+    id: "",
+    trainerName: "",
+    sponsorNames: [],
+    tournamentNames: [],
   });
+  const [isEditing, setIsEditing] = useState(false);
+
   const db = getFirestore();
 
   useEffect(() => {
-    const getUserData = async () => {
+    const fetchData = async () => {
       const userUid = sessionStorage.getItem("userUid");
       if (userUid) {
         const data = await fetchUserData(userUid, db);
-        setFormData(data);
+        if (data) {
+          const trainerName = await fetchTrainerNameById(data.trainerId, db);
+          const sponsors = await fetchNamesByIds(data.sponsors, "sponsors", db);
+          const tournaments = await fetchNamesByIds(
+            data.registeredTournaments,
+            "tournaments",
+            db
+          );
+
+          setFormData({
+            ...data,
+            trainerName,
+            sponsorNames: sponsors,
+            tournamentNames: tournaments,
+          });
+        }
       }
     };
-    getUserData();
+    fetchData();
   }, [db]);
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-  }
-
-  const onSubmit = async (e) => {
-    e.preventDefault();
-    setIsEditing(false);
-
-    try {
-      const userUid = sessionStorage.getItem("userUid");
-      const userDocRef = doc(db, "athletes", userUid);
-      await updateDoc(userDocRef, formData);
-      console.log("User data updated successfully!");
-    } catch (error) {
-      console.error("Error updating user data:", error);
-    }
-  }
-
-  const fetchUserData = async (userId, db) => {
-    try {
-      const userDocRef = doc(db, "athletes", userId);
-      const userDoc = await getDoc(userDocRef);
-      if (userDoc.exists()) {
-        return userDoc.data();
-      } else {
-        console.log("No such user document found!");
-      }
-    } catch (error) {
-      console.error("Error fetching user data:", error);
-    }
-  }
-
-  const displayOrder = ['name', 'email', 'contactNo', 'dob', 'sport', 'experience', 'gender', 'state', 'bio'];
+  const handleEditToggle = () => {
+    setIsEditing(!isEditing);
+  };
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 p-10">
-      <h1 className="text-5xl font-semibold mb-8 text-center text-gray-700">Athlete Profile</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <ProfileSection 
-          isEditing={isEditing} 
-          setIsEditing={setIsEditing} 
-          formData={formData} 
-          handleChange={handleChange} 
-          onSubmit={onSubmit} 
-          displayOrder={displayOrder} 
-        />
-        <SummarySection formData={formData} displayOrder={displayOrder} />
+      <div className="flex justify-between items-center mb-4">
+        <h1 className="text-3xl font-semibold text-gray-700">
+          Athlete Profile
+        </h1>
+        <button
+          onClick={handleEditToggle}
+          className="bg-blue-500 text-white px-4 py-2 rounded-md flex items-center"
+        >
+          <Edit3 className="mr-2" /> {isEditing ? "Save" : "Edit Profile"}
+        </button>
+      </div>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <ProfileSection formData={formData} isEditing={isEditing} />
+        <div>
+          <SingleItemSection title="Trainer" item={formData.trainerName} />
+          <Section title="Sponsors" items={formData.sponsorNames} />
+          <Section
+            title="Registered Tournaments"
+            items={formData.tournamentNames}
+          />
+        </div>
       </div>
     </div>
   );
 }
 
-function ProfileSection({ isEditing, setIsEditing, formData, handleChange, onSubmit, displayOrder }) {
+function ProfileSection({ formData, isEditing }) {
   const MotionCard = motion.div;
+  const displayOrder = [
+    "name",
+    "email",
+    "contactNo",
+    "dob",
+    "sport",
+    "experience",
+    "gender",
+    "state",
+    "bio",
+  ];
 
   return (
     <MotionCard
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.3 }}
-      className="lg:col-span-2 bg-white p-8 rounded-lg shadow-xl border border-gray-200"
+      className="bg-white p-6 rounded-lg shadow-xl border border-gray-200"
     >
-      <h2 className="text-2xl font-semibold mb-4 text-gray-600">Personal Information</h2>
-      <p className="text-gray-500 mb-6">Manage your personal details</p>
-      {isEditing ? (
-        <form onSubmit={onSubmit} className="space-y-6">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {displayOrder.map((key) => (
-              <div key={key} className="form-group">
-                <label className="block text-sm font-medium mb-2 text-gray-500">
-                  {key.charAt(0).toUpperCase() + key.slice(1)}
-                </label>
-                <input
-                  name={key}
-                  value={formData[key]}
-                  onChange={handleChange}
-                  type={key === 'dob' ? 'date' : 'text'}
-                  className="block w-full bg-gray-50 border border-gray-300 rounded-md p-3 text-gray-700 focus:ring-2 focus:ring-blue-500"
-                />
-              </div>
-            ))}
-          </div>
-          <div className="flex justify-end space-x-4 mt-4">
-            <button type="submit" className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow-md">
-              Save Changes
-            </button>
-            <button type="button" className="border border-gray-300 hover:bg-gray-100 text-gray-700 py-2 px-6 rounded-md" onClick={() => setIsEditing(false)}>
-              Cancel
-            </button>
-          </div>
-        </form>
-      ) : (
-        <div className="space-y-4">
-          {displayOrder.map((key) => (
-            <div key={key} className="flex items-center py-2">
-              <IconSelector key={key} />
-              <span className="ml-4 text-gray-600">
-                <strong className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {formData[key]}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-      {!isEditing && (
-        <button
-          type="button"
-          className="mt-6 bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-6 rounded-md shadow-md"
-          onClick={() => setIsEditing(true)}
-        >
-          Edit Profile
-        </button>
-      )}
-    </MotionCard>
-  );
-}
-
-function SummarySection({ formData, displayOrder }) {
-  const MotionCard = motion.div;
-
-  return (
-    <MotionCard
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: 0.1 }}
-      className="bg-white p-8 rounded-lg shadow-xl border border-gray-200"
-    >
-      <h2 className="text-2xl font-semibold mb-4 text-gray-600">Profile Summary</h2>
-      <div className="flex justify-center mb-6">
-        <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center text-3xl text-blue-600 font-semibold">
-          {formData.name.split(' ').map(n => n[0]).join('')}
-        </div>
-      </div>
-      <p className="text-gray-500 mb-6 text-center">Athlete ID: <span className="font-semibold text-gray-700">{formData.id}</span></p>
+      <h2 className="text-2xl font-semibold mb-4 text-gray-600">
+        Personal Information
+      </h2>
       <div className="space-y-4">
         {displayOrder.map((key) => (
-          <div key={key} className="flex items-center py-2">
+          <div key={key} className="flex items-center py-1">
             <IconSelector key={key} />
-            <span className="ml-4 text-gray-600">
-              <strong className="text-gray-700">{key.charAt(0).toUpperCase() + key.slice(1)}:</strong> {formData[key]}
-            </span>
+            {isEditing ? (
+              <input
+                type="text"
+                value={formData[key]}
+                onChange={(e) => handleInputChange(e, key)}
+                className="ml-4 p-2 bg-gray-100 border rounded-md w-full text-gray-600"
+              />
+            ) : (
+              <span className="ml-4 text-gray-600">
+                <strong className="text-gray-700">
+                  {key.charAt(0).toUpperCase() + key.slice(1)}:
+                </strong>{" "}
+                {formData[key]}
+              </span>
+            )}
           </div>
         ))}
       </div>
@@ -181,17 +149,104 @@ function SummarySection({ formData, displayOrder }) {
   );
 }
 
-// Select icon based on field type
-function IconSelector({ key }) {
-  switch (key) {
-    case 'name': return <User className="text-gray-400" />;
-    case 'email': return <Mail className="text-gray-400" />;
-    case 'contactNo': return <Phone className="text-gray-400" />;
-    case 'state': return <MapPin className="text-gray-400" />;
-    case 'dob': return <Calendar className="text-gray-400" />;
-    case 'sport': return <Dumbbell className="text-gray-400" />;
-    case 'achievements': return <Award className="text-gray-400" />;
-    default: return <User className="text-gray-400" />;
+function SingleItemSection({ title, item }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 mt-4">
+      <h3 className="text-lg font-semibold text-gray-600 mb-2">{title}</h3>
+      <p className="text-gray-600">{item || "Not Assigned"}</p>
+    </div>
+  );
+}
+
+function Section({ title, items }) {
+  return (
+    <div className="bg-white p-4 rounded-lg shadow-md border border-gray-200 mt-4">
+      <h3 className="text-lg font-semibold text-gray-600 mb-2">{title}</h3>
+      <ul className="list-disc pl-5 space-y-1">
+        {items.length > 0 ? (
+          items.map((item, index) => (
+            <li key={index} className="text-gray-600">
+              {item}
+            </li>
+          ))
+        ) : (
+          <li className="text-gray-600">No {title}</li>
+        )}
+      </ul>
+    </div>
+  );
+}
+
+async function fetchTrainerNameById(trainerId, db) {
+  try {
+    const trainersCollectionRef = collection(db, "trainers");
+    const querySnapshot = await getDocs(trainersCollectionRef);
+    let matchedTrainer = "Trainer Not Found";
+    querySnapshot.forEach((doc) => {
+      const trainerData = doc.data();
+      if (trainerData.id === trainerId) {
+        matchedTrainer = trainerData.name;
+      }
+    });
+
+    return matchedTrainer;
+  } catch (error) {
+    console.error(`Error fetching trainer by ID:`, error);
+    return "Error Fetching Trainer";
   }
 }
 
+async function fetchNamesByIds(ids, collectionName, db) {
+  try {
+    const names = await Promise.all(
+      ids.map(async (id) => {
+        const docRef = doc(db, collectionName, id);
+        const docSnap = await getDoc(docRef);
+        return docSnap.exists() ? docSnap.data().name : "Unknown";
+      })
+    );
+    return names;
+  } catch (error) {
+    console.error(`Error fetching names from ${collectionName}:`, error);
+    return [];
+  }
+}
+
+async function fetchUserData(userUid, db) {
+  try {
+    const userDocRef = doc(db, "athletes", userUid);
+    const userDoc = await getDoc(userDocRef);
+    return userDoc.exists() ? userDoc.data() : null;
+  } catch (error) {
+    console.error("Error fetching user data:", error);
+  }
+}
+
+function handleInputChange(event, key) {
+  const { value } = event.target;
+  setFormData((prevFormData) => ({
+    ...prevFormData,
+    [key]: value,
+  }));
+}
+
+function IconSelector({ key }) {
+  switch (key) {
+    case "name":
+      return <User className="text-gray-400" />;
+    case "email":
+      return <Mail className="text-gray-400" />;
+    case "contactNo":
+      return <Phone className="text-gray-400" />;
+    case "state":
+      return <MapPin className="text-gray-400" />;
+    case "dob":
+      return <Calendar className="text-gray-400" />;
+    case "sport":
+      return <Dumbbell className="text-gray-400" />;
+    case "achievements":
+      return <Award className="text-gray-400" />;
+    default:
+      return <User className="text-gray-400" />;
+  }
+}

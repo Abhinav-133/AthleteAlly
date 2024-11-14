@@ -58,14 +58,12 @@ export default function TeamRegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setWarning(""); // Reset warning message
-  
-    // Extract athlete IDs and check their existence
+
     const athleteIds = members.map(member => member.athleteId);
     const nonExistentIds = [];
     const batch = writeBatch(db); // Initialize batch
   
     for (const athleteId of athleteIds) {
-      // Query to check if an athlete with the specified ID exists
       const athleteQuery = query(
         collection(db, "athletes"),
         where("id", "==", athleteId) // Query based on 'id' field instead of 'uid'
