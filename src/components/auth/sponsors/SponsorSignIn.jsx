@@ -47,11 +47,15 @@ export default function SponsorSignIn() {
           formValues.password
         );
         const sponsor = sponsorCredentials.user;
+        console.log(sponsor);
         const sponsorDoc = await getDoc(doc(db, "sponsors", sponsor.uid));
 
         if (sponsorDoc.exists()) {
           console.log("User exists in athletes collection:", sponsorDoc.data());
           sessionStorage.setItem("sponsorUid", sponsor.uid);
+          const sponsorData = sponsorDoc.data();
+          const { companyName } = sponsorData;
+          sessionStorage.setItem("sponsorName", companyName);
           navigate("/sponsor");
         } else {
           setError("Sponsor not found in sponsors collection.");

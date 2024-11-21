@@ -10,7 +10,14 @@ import {
 
 import Sidebar from "./Sidebar";
 import { db } from "../../firebaseConfig";
-import { collection, getDocs } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  getFirestore,
+  doc,
+  updateDoc,
+  arrayUnion,
+} from "firebase/firestore";
 
 export default function UpcomingEvents() {
   const [tournaments, setTournaments] = useState([]);
@@ -34,6 +41,40 @@ export default function UpcomingEvents() {
   useEffect(() => {
     fetchTournamentsData();
   }, []);
+
+  const handleSponsorButton = async (id) => {
+    console.log(id);
+    const db = getFirestore();
+    const sponsorName = sessionStorage.getItem("sponsorName");
+    const sponsorUid = sessionStorage.getItem("sponsorUid"); // Fetch sponsor UID from session storage
+
+    if (!sponsorName || !sponsorUid) {
+      console.error("Sponsor Name or UID is not available in session storage.");
+      return;
+    }
+
+    try {
+      // Update the sponsors array in the tournament document
+      const tournamentRef = doc(db, "tournaments", id);
+      await updateDoc(tournamentRef, {
+        sponsors: arrayUnion(sponsorName),
+      });
+      console.log(
+        `Sponsor ${sponsorName} successfully added to tournament ${id}.`
+      );
+
+      // Update the events array in the sponsor document
+      const sponsorRef = doc(db, "sponsors", sponsorUid);
+      await updateDoc(sponsorRef, {
+        events: arrayUnion(id),
+      });
+      console.log(
+        `Tournament ID ${id} successfully added to sponsor ${sponsorName}.`
+      );
+    } catch (error) {
+      console.error("Error updating sponsor or tournament:", error);
+    }
+  };
 
   return (
     <div className="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
@@ -91,7 +132,12 @@ export default function UpcomingEvents() {
                     </div>
                   </div>
 
-                  <button className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-1 left-0">
+                  <button
+                    className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-1 left-0"
+                    onClick={() => {
+                      handleSponsorButton(event.id);
+                    }}
+                  >
                     Sponsor
                   </button>
                 </div>

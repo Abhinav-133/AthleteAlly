@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { db } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
-
+import { getFirestore, doc, updateDoc, arrayUnion } from "firebase/firestore";
 const TeamsPage = () => {
   const [teams, setTeams] = useState([]);
 
   const fetchTeamsData = async () => {
     try {
       const teamsCollection = collection(db, "teams");
-      const teamsSnapshot = await getDocs(teamsCollection); // Fetch the documents
+      const teamsSnapshot = await getDocs(teamsCollection);
       const teamsList = teamsSnapshot.docs.map((doc) => ({
-        id: doc.id, // Optionally include the document ID
-        ...doc.data(), // Spread the document data
+        id: doc.id,
+        ...doc.data(),
       }));
 
-      setTeams(teamsList); // Set the athletes data in state
+      setTeams(teamsList);
       console.log("Fetched Teams data:", teamsList);
     } catch (error) {
       console.error("Error fetching Tournaments data:", error);
@@ -29,6 +29,38 @@ const TeamsPage = () => {
   useEffect(() => {
     console.log(teams);
   }, [teams]);
+
+  const handleSponsorButton = async (id) => {
+    console.log(id);
+    const db = getFirestore();
+    const sponsorName = sessionStorage.getItem("sponsorName");
+    const sponsorUid = sessionStorage.getItem("sponsorUid"); // Fetch sponsor UID from session storage
+
+    if (!sponsorName) {
+      console.error("sponsor Name is not available in session storage.");
+      return;
+    }
+
+    try {
+      const teamsRef = doc(db, "teams", id);
+
+      await updateDoc(teamsRef, {
+        sponsors: arrayUnion(sponsorName),
+      });
+
+      console.log(
+        `Sponsor ${sponsorName} successfully added to tournament ${id}.`
+      );
+
+      const sponsorRef = doc(db, "sponsors", sponsorUid);
+      await updateDoc(sponsorRef, {
+        teams: arrayUnion(id),
+      });
+    } catch (error) {
+      console.error("Error adding sponsor to tournament:", error);
+    }
+  };
+
   return (
     <div className="flex bg-gray-100 min-h-screen">
       <div className="w-64 fixed">
@@ -77,7 +109,7 @@ const TeamsPage = () => {
                         key={memberIndex}
                         className="bg-blue-50 p-4 rounded-lg flex items-center justify-center shadow"
                       >
-                        {member}
+                        {member.name}
                       </div>
                     ))}
                   </div>
@@ -98,7 +130,12 @@ const TeamsPage = () => {
                     ))}
                   </div>
                 </div>
-                <button className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-1 left-0">
+                <button
+                  className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-1 left-0"
+                  onClick={() => {
+                    handleSponsorButton(team.id);
+                  }}
+                >
                   Sponsor
                 </button>
               </div>

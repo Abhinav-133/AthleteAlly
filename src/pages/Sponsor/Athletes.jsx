@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Sidebar from "./Sidebar";
 import { db } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
-
+import { getFirestore, doc, updateDoc, arrayUnion } from "firebase/firestore";
 const AthletesPage = () => {
   const [athletes, setAthletes] = useState([]);
 
@@ -26,6 +26,34 @@ const AthletesPage = () => {
     fetchAthletesData();
   }, []);
 
+  const handleSponsorButton = async (id) => {
+    console.log(id);
+    const db = getFirestore();
+    const sponsorName = sessionStorage.getItem("sponsorName");
+    const sponsorUid = sessionStorage.getItem("sponsorUid"); // Fetch sponsor UID from session storage
+    if (!sponsorName) {
+      console.error("sponsor Name is not available in session storage.");
+      return;
+    }
+
+    try {
+      const athletesRef = doc(db, "athletes", id);
+
+      await updateDoc(athletesRef, {
+        sponsors: arrayUnion(sponsorName),
+      });
+
+      const sponsorRef = doc(db, "sponsors", sponsorUid);
+      await updateDoc(sponsorRef, {
+        athletes: arrayUnion(id),
+      });
+      console.log(
+        `Sponsor ${sponsorName} successfully added to tournament ${id}.`
+      );
+    } catch (error) {
+      console.error("Error adding sponsor to Atheltes:", error);
+    }
+  };
   return (
     <div className="flex bg-gray-100 min-h-screen">
       {/* Sidebar space */}
@@ -88,7 +116,12 @@ const AthletesPage = () => {
                       ))}
                   </div>
                 </div>
-                <button className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-2 left-0">
+                <button
+                  className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-2 left-0"
+                  onClick={() => {
+                    handleSponsorButton(athlete.id);
+                  }}
+                >
                   Sponsor
                 </button>
               </div>

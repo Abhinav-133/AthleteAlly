@@ -305,7 +305,7 @@ export default function EnhancedSponsorOverview() {
                       <ExpandableCard key={index} title={team.teamName}>
                         <div className="flex flex-col md:flex-row md:items-center">
                           <img
-                            src={team.image}
+                            src={team.img}
                             alt={team.teamName}
                             className="w-24 h-24 object-cover rounded-full mb-4 md:mb-0 md:mr-6"
                           />
@@ -320,7 +320,7 @@ export default function EnhancedSponsorOverview() {
                               <strong>Team Leader:</strong> {team.teamLeader}
                             </p>
                             <p>
-                              <strong>Members:</strong> {team.members}
+                              <strong>Members:</strong> {team.members.name}
                             </p>
                             <p>
                               <strong>Tournament:</strong> {team.tournamentName}
