@@ -49,13 +49,13 @@ const TeamsPage = () => {
                 className="bg-white rounded-lg shadow-lg overflow-hidden mb-8 relative h-[525px]"
               >
                 <div className="md:flex">
-                  <div className="md:flex-shrink-0 flex items-center justify-center p-6 bg-blue-50">
+                  {/* <div className="md:flex-shrink-0 flex items-center justify-center p-6 bg-blue-50">
                     <img
                       className="h-32 w-32 object-contain"
                       src={team.image}
                       alt="Error"
                     />
-                  </div>
+                  </div> */}
                   <div className="p-8">
                     <div className="uppercase tracking-wide text-sm text-blue-600 font-semibold">
                       {team.sport}
@@ -77,7 +77,7 @@ const TeamsPage = () => {
                         key={memberIndex}
                         className="bg-blue-50 p-4 rounded-lg flex items-center justify-center shadow"
                       >
-                        {member}
+                        {member.name}
                       </div>
                     ))}
                   </div>
@@ -93,7 +93,7 @@ const TeamsPage = () => {
                         key={sponsorIndex}
                         className="bg-blue-50 p-4 rounded-lg flex items-center justify-center shadow"
                       >
-                        {sponsor}
+                        {sponsor.name}
                       </div>
                     ))}
                   </div>

@@ -32,7 +32,7 @@ export default function AthleteProfile() {
     bio: "",
     experience: "",
     gender: "",
-    id: "",
+    enroll: "",
     trainerName: "",
     sponsorNames: [],
     tournamentNames: [],
@@ -181,7 +181,7 @@ async function fetchTrainerNameById(trainerId, db) {
   try {
     const trainersCollectionRef = collection(db, "trainers");
     const querySnapshot = await getDocs(trainersCollectionRef);
-    let matchedTrainer = "Trainer Not Found";
+    let matchedTrainer = "No Trainer Assigned";
     querySnapshot.forEach((doc) => {
       const trainerData = doc.data();
       if (trainerData.id === trainerId) {
