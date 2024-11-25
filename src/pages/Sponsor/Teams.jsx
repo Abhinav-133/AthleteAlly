@@ -102,6 +102,7 @@ const TeamsPage = () => {
                     </div>
                   </div>
 
+
                   <div className="px-8 py-6">
                     <h1 className="text-2xl font-bold text-blue-900 mb-4">
                       Team Members
@@ -116,7 +117,9 @@ const TeamsPage = () => {
                         </div>
                       ))}
                     </div>
+
                   </div>
+
 
                   <div className="px-8 py-6">
                     <h3 className="text-2xl font-bold text-blue-900 mb-4">
@@ -132,6 +135,7 @@ const TeamsPage = () => {
                         </div>
                       ))}
                     </div>
+
                   </div>
                   <button
                     className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-1 left-0"

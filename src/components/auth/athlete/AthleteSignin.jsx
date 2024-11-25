@@ -4,10 +4,9 @@ import { Loader2, Mail, Lock } from 'lucide-react'
 import { Button, TextField, Typography, Alert } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { Link } from 'react-router-dom'
-import { auth, db } from '../../../firebaseConfig'; // Make sure to import your Firebase configuration
+import { auth, db } from '../../../firebaseConfig';
 import { signInWithEmailAndPassword } from 'firebase/auth'
 import { doc, getDoc } from 'firebase/firestore'
-
 
 const AthleteSignIn = () => {
   const [email, setEmail] = useState('')
@@ -22,22 +21,23 @@ const AthleteSignIn = () => {
     setError(null)
 
     try {
-      // Sign in with Firebase Auth
       const userCredential = await signInWithEmailAndPassword(auth, email, password)
       const user = userCredential.user
 
-      // Check if user exists in the athletes collection
       const userDoc = await getDoc(doc(db, 'athletes', user.uid))
 
       if (userDoc.exists()) {
-        console.log('User exists in athletes collection:', userDoc.data())
+        const userData = userDoc.data()
         
-        // Store the user UID in sessionStorage
-        sessionStorage.setItem('userUid', user.uid)
-        navigate('/athlete-dashboard') // Navigate to the dashboard
+        if (userData.valid) {
+          
+          sessionStorage.setItem('userUid', user.uid)
+          navigate('/athlete-dashboard')
+        } else {
+          setError('You cannot login. Please contact the administrator')
+        }
       } else {
         setError('User not found in athletes collection.')
-        console.log('User not found in athletes collection.')
       }
     } catch (err) {
       setError('Failed to sign in. Please check your credentials.')
@@ -141,7 +141,6 @@ const AthleteSignIn = () => {
               </a>
             </Link>
           </Typography>
-
         </motion.div>
       </motion.div>
     </div>

@@ -7,32 +7,31 @@ export default function TeamRegisterPage() {
   const [userUid, setUserUid] = useState("");
   const [teamName, setTeamName] = useState("");
   const [members, setMembers] = useState([]);
-  const [tournamentId, setTournamentId] = useState(""); // This should be fetched from session storage
-  const [tournamentName, setTournamentName] = useState(""); // New state for tournament name
-  const [teamSize, setTeamSize] = useState(0); // Set this according to tournament rules
+  const [tournamentId, setTournamentId] = useState(""); 
+  const [tournamentName, setTournamentName] = useState("");
+  const [teamSize, setTeamSize] = useState(0); 
   const [warning, setWarning] = useState("");
-  const navigate = useNavigate(); // Use useNavigate for redirection
+  const navigate = useNavigate();
 
   useEffect(() => {
     const uid = sessionStorage.getItem("userUid");
-    const storedTournamentId = sessionStorage.getItem("tournamentID"); // Fetch tournament ID from session storage
+    const storedTournamentId = sessionStorage.getItem("tournamentID");
 
     if (!uid) {
-      navigate('/login'); // Redirect to login if userUid doesn't exist
+      navigate('/login'); 
     } else {
       setUserUid(uid);
       setTournamentId(storedTournamentId);
       
-      // Fetch tournament details to get required team size and name
       const fetchTournamentDetails = async (id) => {
         const tournamentRef = doc(db, "tournaments", id);
         const tournamentSnap = await getDoc(tournamentRef);
         if (tournamentSnap.exists()) {
           const tournamentData = tournamentSnap.data();
-          const requiredTeamSize = tournamentData.teamSize; // Assuming this field exists
-          const name = tournamentData.name; // Assuming "name" field exists for the tournament name
+          const requiredTeamSize = tournamentData.teamSize; 
+          const name = tournamentData.name; 
           setTeamSize(requiredTeamSize);
-          setTournamentName(name); // Set the tournament name
+          setTournamentName(name); 
           const initialMembers = Array.from({ length: requiredTeamSize }, () => ({ name: "", athleteId: "" }));
           setMembers(initialMembers);
         } else {
@@ -57,23 +56,21 @@ export default function TeamRegisterPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setWarning(""); // Reset warning message
-  
-    // Extract athlete IDs and check their existence
+    setWarning(""); 
+
     const athleteIds = members.map(member => member.athleteId);
     const nonExistentIds = [];
-    const batch = writeBatch(db); // Initialize batch
+    const batch = writeBatch(db); 
   
     for (const athleteId of athleteIds) {
-      // Query to check if an athlete with the specified ID exists
       const athleteQuery = query(
         collection(db, "athletes"),
-        where("id", "==", athleteId) // Query based on 'id' field instead of 'uid'
+        where("enroll", "==", athleteId)
       );
   
       const athleteSnap = await getDocs(athleteQuery);
       if (athleteSnap.empty) {
-        nonExistentIds.push(athleteId); // Collect non-existent IDs
+        nonExistentIds.push(athleteId); 
       } else {
         athleteSnap.forEach((doc) => {
           batch.update(doc.ref, {
@@ -85,24 +82,22 @@ export default function TeamRegisterPage() {
   
     if (nonExistentIds.length > 0) {
       setWarning(`The following athlete IDs do not exist: ${nonExistentIds.join(", ")}`);
-      return; // Stop the process if any athlete IDs do not exist
+      return; 
     }
   
-    // Add team registration data
     try {
-      const teamRef = await addDoc(collection(db, "teams"), { // Generate a new team document with addDoc
+      const teamRef = await addDoc(collection(db, "teams"), {
         teamName,
-        teamLeader: userUid,  // Assuming 'teamLeader' refers to 'userUid'
+        teamLeader: userUid,  
         members,
         tournamentId,
         tournamentName,
         createdBy: userUid,
       });
   
-      // Commit the batch
       await batch.commit();
       console.log("Team and athletes successfully registered.");
-      navigate("/athlete-dashboard"); // Use navigate for redirection
+      navigate("/athlete-dashboard"); 
     } catch (error) {
       console.error("Error registering team and updating athletes: ", error);
       setWarning("An error occurred during registration.");
@@ -112,7 +107,7 @@ export default function TeamRegisterPage() {
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 p-10">
       <h1 className="text-5xl font-semibold mb-8 text-center text-gray-700">Team Registration</h1>
-      <h2 className="text-2xl font-semibold mb-4 text-center text-gray-600">{tournamentName}</h2> {/* Display tournament name */}
+      <h2 className="text-2xl font-semibold mb-4 text-center text-gray-600">{tournamentName}</h2> 
       {warning && <div className="text-red-500 mb-4">{warning}</div>}
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-xl border border-gray-200">
         <div className="mb-6">

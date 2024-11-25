@@ -23,7 +23,7 @@ const fadeIn = {
 const ParticleBackground = () => (
   <div className="absolute inset-0 overflow-hidden pointer-events-none">
     {[...Array(200)].map((_, i) => (
-      <motion.div
+      <motion.div 
         key={i}
         className="absolute w-2 h-2 bg-blue-500 rounded-full"
         initial={{
@@ -80,7 +80,6 @@ export default function HomePage() {
   };
 
   const fetchNews = async () => {
-    console.log(newsUrl);
     let response = await fetch(newsUrl);
     response = await response.json();
 
@@ -114,7 +113,6 @@ export default function HomePage() {
       });
 
       setTournaments(formattedTournaments.slice(0, 3));
-      console.log(tournaments);
     };
     fetchTournaments();
   }, []);

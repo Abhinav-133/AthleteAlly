@@ -1,5 +1,8 @@
+// tailwind.config.js
 /** @type {import('tailwindcss').Config} */
-module.exports = {
+import tailwindcssTextFillStroke from 'tailwindcss-text-fill-stroke';
+
+export default {
   content: [
     "./src/**/*.{js,jsx,ts,tsx}",
     "./pages/**/*.{js,jsx,ts,tsx}",
@@ -44,6 +47,6 @@ module.exports = {
     },
   },
   plugins: [
-    require('tailwindcss-text-fill-stroke')(),  // Plugin for text stroke
+    tailwindcssTextFillStroke(),  // Plugin for text stroke
   ],
-}
+};

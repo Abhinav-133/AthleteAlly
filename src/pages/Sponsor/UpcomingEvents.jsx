@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   CalendarIcon,
   MapPinIcon,
-  DollarSignIcon,
+  IndianRupee,
   UsersIcon,
   ClockIcon,
   Flag,
@@ -122,7 +122,7 @@ export default function UpcomingEvents() {
                     </div>
 
                     <div className="flex items-center text-blue-800">
-                      <DollarSignIcon className="w-5 h-5 mr-2" />
+                      <IndianRupee className="w-5 h-5 mr-2" />
                       <span>{event.prizePool}</span>
                     </div>
 
