@@ -49,16 +49,6 @@ const TeamsPage = () => {
                 className="bg-white rounded-lg shadow-lg overflow-hidden mb-8 relative h-[525px]"
               >
                 <div className="md:flex">
-<<<<<<< HEAD
-=======
-                  {/* <div className="md:flex-shrink-0 flex items-center justify-center p-6 bg-blue-50">
-                    <img
-                      className="h-32 w-32 object-contain"
-                      src={team.image}
-                      alt="Error"
-                    />
-                  </div> */}
->>>>>>> 53b41574610469dd1bafbb8120660e5570171757
                   <div className="p-8">
                     <div className="uppercase tracking-wide text-sm text-blue-600 font-semibold">
                       {team.sport}

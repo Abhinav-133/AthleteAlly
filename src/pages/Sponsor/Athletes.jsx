@@ -47,10 +47,7 @@ const AthletesPage = () => {
                 className="bg-white rounded-lg shadow-lg relative h-[520px]"
               >
                 <div className="md:flex">
-<<<<<<< HEAD
                  
-=======
->>>>>>> 53b41574610469dd1bafbb8120660e5570171757
                   <div className="p-8">
                     <div className="uppercase tracking-wide text-sm text-blue-600 font-semibold">
                       {athlete.sport}
