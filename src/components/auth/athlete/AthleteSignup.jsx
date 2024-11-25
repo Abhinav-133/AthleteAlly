@@ -110,7 +110,7 @@ const AthleteSignUp = () => {
         adharCard: formData.adharCard,
         bio: formData.bio,
         createdAt: new Date().toISOString(),
-        id: athleteId,
+        enroll: athleteId,
         canParticipate: formData.canParticipate,
         valid:formData.valid,
       });

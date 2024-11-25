@@ -37,9 +37,8 @@ const TrainersSignUp = () => {
     adharCard: "",
     bio: "",
     valid: false,
-    id: "",
+    enroll: "",
     certification: null,
-    trainerID:""
   });
 
   const [error, setError] = useState(null);
@@ -128,9 +127,8 @@ const TrainersSignUp = () => {
         bio: formData.bio,
         valid: formData.valid,
         createdAt: new Date().toISOString(),
-        id: generateFixedLengthId(),
+        enroll: generateFixedLengthId(),
         certificationURL: certificationURL,
-        trainerID:generateFixedLengthId()
       });
 
       navigate("/trainer-login");
