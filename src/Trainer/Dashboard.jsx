@@ -14,6 +14,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
     { icon: UserCircle, label: "Athlete Profile", link: "/trainers-dashboard/athletes" },
     { icon: Trophy, label: "Tournaments", link: "/trainers-dashboard/tournaments" },
     // { icon: Trophy, label: "Tournaments", link: "/trainers-dashboard/tournaments" },
+    {
+      icon: Apple, // You can replace this with any other icon from Lucide icons
+      label: "Injury Prediction",
+      link: "https://injury-predictor-analysis-mcu3wkmffarbdwwwt239gf.streamlit.app/", // Link to your injury prediction page
+    },
   ]
 
   const handleLogout = () => {
