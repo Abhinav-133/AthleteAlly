@@ -31,7 +31,7 @@ const SponsorEngagementPage = () => {
       }));
 
       setTeams(teamsList);
-      console.log("Fetched Teams data:", teamsList);
+      // console.log("Fetched Teams data:", teamsList);
     } catch (error) {
       console.error("Error fetching Tournaments data:", error);
     }
@@ -47,7 +47,7 @@ const SponsorEngagementPage = () => {
       }));
 
       setAthletes(athletesList);
-      console.log("Fetched athletes data:", athletesList);
+      // console.log("Fetched athletes data:", athletesList);
     } catch (error) {
       console.error("Error fetching athletes data:", error);
     }
@@ -87,10 +87,24 @@ const SponsorEngagementPage = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+
+    let emailAddress = "";
+    for (let i = 0; i < athletes.length; i++) {
+      if (athletes[i].name === selectedEntity) {
+        emailAddress = athletes[i].email;
+      }
+    }
+    for (let i = 0; i < teams.length; i++) {
+      if (teams[i].teamName === selectedEntity) {
+        emailAddress = teams[i].email;
+      }
+    }
+
     setLoading(true);
     // Simulate API call
     setTimeout(() => {
-      console.log({ selectedEntity, engagementType, message });
+      console.log({ selectedEntity, engagementType, message, emailAddress });
+
       setLoading(false);
       setSubmitted(true);
     }, 2000);
