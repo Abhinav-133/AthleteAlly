@@ -98,6 +98,7 @@ export default function EnhancedSponsorOverview() {
       console.error("Error fetching Sponsor data:", error);
     }
   };
+
   const fetchTeamsData = async () => {
     try {
       const teamsCollection = collection(db, "teams");
@@ -106,7 +107,6 @@ export default function EnhancedSponsorOverview() {
         id: doc.id,
         ...doc.data(),
       }));
-
       for (let i in teamsList) {
         if (teamsList[i].sponsors.includes(sponsor.companyName)) {
           setTeams((prev) => [teamsList[i], ...prev]);
@@ -153,6 +153,7 @@ export default function EnhancedSponsorOverview() {
       console.error("Error fetching Tournaments data:", error);
     }
   };
+
   useEffect(() => {
     fetchSponsorData();
   }, []);
