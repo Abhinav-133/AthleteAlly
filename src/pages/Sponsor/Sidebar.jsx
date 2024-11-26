@@ -34,6 +34,14 @@ const sidebarItems = [
     icon: <MessageCircle className="w-5 h-5" />,
     onclick: (navigate) => navigate("/sponsor/engagement"),
   },
+  {
+    name: "Log Out",
+    onclick: (navigate) => {
+      navigate("/");
+      sessionStorage.removeItem("sponsorName");
+      sessionStorage.removeItem("sponsorUid");
+    },
+  },
 ];
 
 export default function Sidebar() {

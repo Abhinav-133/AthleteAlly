@@ -3,6 +3,8 @@ import Sidebar from "./Sidebar";
 import { db } from "../../firebaseConfig";
 import { collection, getDocs } from "firebase/firestore";
 import { getFirestore, doc, updateDoc, arrayUnion } from "firebase/firestore";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 const AthletesPage = () => {
   const [athletes, setAthletes] = useState([]);
 
@@ -50,8 +52,27 @@ const AthletesPage = () => {
       console.log(
         `Sponsor ${sponsorName} successfully added to tournament ${id}.`
       );
+
+      toast.success("🎉 Sponsor added successfully!", {
+        position: "top-right",
+        autoClose: 3000, // Closes after 3 seconds
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     } catch (error) {
       console.error("Error adding sponsor to Atheltes:", error);
+      toast.error("⚠️ Failed to add sponsor. Try again!", {
+        position: "top-right",
+        autoClose: 3000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+        theme: "light",
+      });
     }
   };
   return (
@@ -127,6 +148,7 @@ const AthletesPage = () => {
               </div>
             ))}
           </div>
+          <ToastContainer />
         </div>
       </div>
     </div>

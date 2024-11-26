@@ -62,8 +62,7 @@ export default function SponsorSignIn() {
           console.log("Sponsor not found in sponsors collection.");
         }
       } catch (err) {
-        setAuthError(err.message); // Set authentication error message
-      } finally {
+        setAuthError(err.message);
         setIsSubmitting(false);
       }
     }
