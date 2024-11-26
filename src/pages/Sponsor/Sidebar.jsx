@@ -5,6 +5,7 @@ import {
   UsersIcon,
   MessageCircle,
   TableOfContents,
+  LogOutIcon, // Added icon for logout
 } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
@@ -47,16 +48,25 @@ const sidebarItems = [
 export default function Sidebar() {
   const navigate = useNavigate();
 
+  // Logout function
+  const handleLogout = () => {
+    // Remove sponsorUid from session storage
+    sessionStorage.removeItem("sponsorUid");
+
+    // Navigate to the home page
+    navigate("/");
+  };
+
   return (
-    <div className="w-64 bg-gray-900 text-white h-screen">
+    <div className="w-64 bg-gray-900 text-white h-screen flex flex-col">
       <div className="p-4">
         <h1 className="text-2xl font-bold">Sports Sponsors</h1>
       </div>
-      <nav className="mt-8">
+      <nav className="mt-8 flex-grow">
         {sidebarItems.map((item, index) => (
           <div
             key={index}
-            className="flex items-center p-2 hover:bg-gray-800 rounded cursor-pointer"
+            className="flex items-center p-3 hover:bg-gray-800 rounded cursor-pointer"
             onClick={() => item.onclick(navigate)}
           >
             {item.icon}
@@ -64,6 +74,14 @@ export default function Sidebar() {
           </div>
         ))}
       </nav>
+      {/* Logout Button */}
+      <div
+        onClick={handleLogout}
+        className="flex items-center p-3 hover:bg-red-600 rounded-b-lg cursor-pointer mt-4"
+      >
+        <LogOutIcon className="w-5 h-5 text-red-500" />
+        <span className="ml-3 text-red-500 font-semibold">Logout</span>
+      </div>
     </div>
   );
 }

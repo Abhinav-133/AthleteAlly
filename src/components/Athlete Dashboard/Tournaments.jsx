@@ -3,11 +3,21 @@
 import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Search, Calendar, MapPin, Users, Trophy } from "lucide-react";
-import { collection, getDocs, Timestamp } from "firebase/firestore";
+import { collection, getDocs, doc, getDoc, Timestamp } from "firebase/firestore";
 import { db } from "../../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 
-const sports = ["All", "Swimming", "Running", "Tennis", "Basketball", "CrossFit", "Judo","Hockey"];
+// Define sports options
+const sports = [
+  "All",
+  "Swimming",
+  "Running",
+  "Tennis",
+  "Basketball",
+  "CrossFit",
+  "Judo",
+  "Hockey",
+];
 
 export default function Tournaments() {
   const [searchTerm, setSearchTerm] = useState("");
@@ -25,7 +35,10 @@ export default function Tournaments() {
       }));
       const formattedTournaments = tournamentsData.map((tournament) => ({
         ...tournament,
-        date: tournament.date instanceof Timestamp ? tournament.date.toDate() : new Date(tournament.date),
+        date:
+          tournament.date instanceof Timestamp
+            ? tournament.date.toDate()
+            : new Date(tournament.date),
       }));
       setTournaments(formattedTournaments);
     };
@@ -40,8 +53,12 @@ export default function Tournaments() {
       tournament.name.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
-  const upcomingTournaments = filteredTournaments.filter((tournament) => tournament.date >= today);
-  const pastTournaments = filteredTournaments.filter((tournament) => tournament.date < today);
+  const upcomingTournaments = filteredTournaments.filter(
+    (tournament) => tournament.date >= today
+  );
+  const pastTournaments = filteredTournaments.filter(
+    (tournament) => tournament.date < today
+  );
 
   return (
     <div className="min-h-screen bg-gray-100 text-gray-900 p-8">
@@ -57,7 +74,10 @@ export default function Tournaments() {
             onChange={(e) => setSearchTerm(e.target.value)}
             className="bg-gray-200 text-gray-800 border-gray-300 pl-10 p-2 rounded w-full"
           />
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500" size={18} />
+          <Search
+            className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-500"
+            size={18}
+          />
         </div>
 
         <div className="flex gap-4 w-full md:w-auto">
@@ -81,7 +101,9 @@ export default function Tournaments() {
           <button
             key={tab}
             className={`px-6 py-2 text-lg rounded transition ${
-              activeTab === tab ? "bg-blue-600 text-white" : "bg-gray-200 text-gray-700"
+              activeTab === tab
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700"
             } mx-2`}
             onClick={() => setActiveTab(tab)}
           >
@@ -112,7 +134,12 @@ export default function Tournaments() {
   );
 }
 
-function TournamentsGrid({ title, tournaments, showRegisterButton, emptyMessage }) {
+function TournamentsGrid({
+  title,
+  tournaments,
+  showRegisterButton,
+  emptyMessage,
+}) {
   return (
     <div>
       <h2 className="text-2xl font-semibold mb-4 text-center">{title}</h2>
@@ -132,7 +159,10 @@ function TournamentsGrid({ title, tournaments, showRegisterButton, emptyMessage 
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <TournamentCard tournament={tournament} showRegisterButton={showRegisterButton} />
+              <TournamentCard
+                tournament={tournament}
+                showRegisterButton={showRegisterButton}
+              />
             </motion.div>
           ))}
         </motion.div>
@@ -143,27 +173,44 @@ function TournamentsGrid({ title, tournaments, showRegisterButton, emptyMessage 
 
 function TournamentCard({ tournament, showRegisterButton }) {
   const navigate = useNavigate();
+  const [user, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const userUid = sessionStorage.getItem("userUid");
+      if (!userUid) {
+        navigate("/athlete-login");
+        return;
+      }
+
+      const userDoc = await getDoc(doc(db, "athletes", userUid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        setUserData(userData);
+        console.log("Fetched User Data:", userData); // Debugging log
+      } else {
+        console.log("No such user document!");
+      }
+    };
+    fetchUserData();
+  }, [navigate]);
 
   const handleAboutClick = () => {
-    // Store the tournament ID in session storage
     sessionStorage.setItem("tournamentID", tournament.id);
-
-    // Navigate to the /tournament page
     navigate("/tournament");
   };
 
   const handleAboutClick1 = () => {
-    // Store the tournament ID in session storage
     sessionStorage.setItem("tournamentID", tournament.id);
-
-    // Navigate to the /tournament page
     navigate("/team-register");
   };
 
   return (
     <div className="bg-white rounded shadow-lg hover:shadow-xl transition transform hover:scale-105 p-6">
       <h3 className="text-xl font-medium mb-2">{tournament.name}</h3>
-      <span className="bg-blue-600 text-white px-2 py-1 rounded text-sm">{tournament.sport}</span>
+      <span className="bg-blue-600 text-white px-2 py-1 rounded text-sm">
+        {tournament.sport}
+      </span>
       <div className="mt-4 space-y-2 text-gray-600">
         <div className="flex items-center">
           <Calendar className="mr-2 h-5 w-5 text-blue-500" />
@@ -183,16 +230,24 @@ function TournamentCard({ tournament, showRegisterButton }) {
         </div>
       </div>
       <div className="mt-4 flex justify-between gap-2">
-        {showRegisterButton ? (
-          <button className="w-full bg-blue-600 text-white py-2 rounded transition hover:bg-blue-700"  onClick={handleAboutClick1}>
+        {showRegisterButton && user && (
+          <button
+            className={`w-full ${
+              user.canParticipate
+                ? "bg-blue-600 hover:bg-blue-700"
+                : "bg-gray-400 cursor-not-allowed"
+            } text-white py-2 rounded`}
+            onClick={handleAboutClick1}
+            disabled={!user.canParticipate}
+          >
             Register
           </button>
-        ) : null}
+        )}
         <button
-          className="w-full bg-gray-300 text-gray-800 py-2 rounded transition hover:bg-gray-400"
           onClick={handleAboutClick}
+          className="w-full bg-blue-600 hover:bg-blue-700 text-white py-2 rounded"
         >
-          About
+          Learn More
         </button>
       </div>
     </div>

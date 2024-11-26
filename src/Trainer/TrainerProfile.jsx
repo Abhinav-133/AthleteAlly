@@ -1,5 +1,4 @@
 import React, { useState ,useEffect} from "react"
-//import { Edit, Star, Calendar, User, Award, ChevronRight } from "lucide-react"
 import { User, Mail, Phone, MapPin, Calendar, Dumbbell, Award } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { getFirestore, doc, getDoc, updateDoc } from "firebase/firestore";
@@ -17,11 +16,10 @@ export default function TrainerProfilePage(){
     bio: "",
     experience: "",
     gender: "",
-    id:""
+    enroll:""
   });
   const db=getFirestore();
   
-
   useEffect(() => {
     const getUserData = async () => {
       const userUid = sessionStorage.getItem("userUid");
@@ -169,7 +167,7 @@ function SummarySection({ formData, displayOrder }) {
           {formData.name.split(' ').map(n => n[0]).join('')}
         </div> */}
       </div>
-      <p className="text-gray-500 mb-6 text-center">Trainer ID: <span className="font-semibold text-gray-700">{formData.id}</span></p>
+      <p className="text-gray-500 mb-6 text-center">Trainer ID: <span className="font-semibold text-gray-700">{formData.enroll}</span></p>
       <div className="space-y-4">
         {displayOrder.map((key) => (
           <div key={key} className="flex items-center py-2">

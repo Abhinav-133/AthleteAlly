@@ -41,7 +41,11 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       label: "Your Tournaments",
       link: "/athlete-dashboard/mytournaments",
     },
-    { icon: Dumbbell, label: "Trainers", link: "/athlete-dashboard/alltrainers" },
+    {
+      icon: Dumbbell,
+      label: "Trainers",
+      link: "/athlete-dashboard/alltrainers",
+    },
   ];
 
   return (
@@ -160,10 +164,7 @@ const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
             <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
               <ul className="py-2 text-sm text-white">
                 <li className="hover:bg-gray-700 px-4 py-2">
-                  <Link to="/athlete-dashboard/edit-profile">Edit Profile</Link>
-                </li>
-                <li className="hover:bg-gray-700 px-4 py-2">
-                  <Link to="/athlete-dashboard/ask-query">Ask Query</Link>
+                  <Link to="/athlete-dashboard/profile">Edit Profile</Link>
                 </li>
                 <li
                   className="hover:bg-gray-700 px-4 py-2 cursor-pointer"

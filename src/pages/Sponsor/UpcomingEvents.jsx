@@ -5,7 +5,7 @@ import "react-toastify/dist/ReactToastify.css";
 import {
   CalendarIcon,
   MapPinIcon,
-  DollarSignIcon,
+  IndianRupee,
   UsersIcon,
   ClockIcon,
   Flag,
@@ -155,6 +155,7 @@ export default function UpcomingEvents() {
                       </div>
                     </div>
 
+<<<<<<< HEAD
                     <button
                       className="w-[97%] bg-blue-500 text-white m-2 p-2 rounded-lg text-lg font-bold absolute bottom-1 left-0"
                       onClick={() => {
@@ -163,6 +164,22 @@ export default function UpcomingEvents() {
                     >
                       Sponsor
                     </button>
+=======
+                    <div className="flex items-center text-blue-800">
+                      <Flag className="w-5 h-5 mr-2" />
+                      <span>{event.sport}</span>
+                    </div>
+
+                    <div className="flex items-center text-blue-800">
+                      <IndianRupee className="w-5 h-5 mr-2" />
+                      <span>{event.prizePool}</span>
+                    </div>
+
+                    <div className="flex items-center text-blue-800">
+                      <UsersIcon className="w-5 h-5 mr-2" />
+                      <span>{event.participants}</span>
+                    </div>
+>>>>>>> 9bf9f3c694cd9c99f179083ef7d30903f7b2d333
                   </div>
                 ))}
             </div>

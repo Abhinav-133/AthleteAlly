@@ -127,15 +127,6 @@ export default function SingleTournament() {
             prizes!
           </p>
         </div>
-
-        {/* Register Now Button */}
-        <div className="text-center mt-8">
-          <button className="bg-blue-600 text-white py-3 px-8 rounded-md hover:bg-blue-700 transition duration-300 transform hover:scale-105 hover:shadow-lg">
-            Register Now
-          </button>
-        </div>
-
-        {/* Footer Section */}
         <div className="bg-blue-700 text-white py-4 flex justify-center items-center mt-8">
           <span>Get ready for a groundbreaking esports event!</span>
         </div>

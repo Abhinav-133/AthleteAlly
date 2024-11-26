@@ -37,7 +37,7 @@ const TrainersSignUp = () => {
     adharCard: "",
     bio: "",
     valid: false,
-    id: "",
+    enroll: "",
     certification: null,
   });
 
@@ -125,10 +125,9 @@ const TrainersSignUp = () => {
         contactNo: formData.contactNo,
         adharCard: formData.adharCard,
         bio: formData.bio,
-        resume: formData.resume ? formData.resume.name : "",
         valid: formData.valid,
         createdAt: new Date().toISOString(),
-        id: generateFixedLengthId(),
+        enroll: generateFixedLengthId(),
         certificationURL: certificationURL,
       });
 

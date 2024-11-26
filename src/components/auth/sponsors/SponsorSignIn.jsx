@@ -4,17 +4,13 @@ import React, { useState } from "react";
 import { motion } from "framer-motion";
 import { TextField, Button, CircularProgress, Alert } from "@mui/material";
 import { Mail, Lock } from "lucide-react";
-import { auth, db } from "../../../firebaseConfig"; // Ensure correct import of your Firebase config
+import { auth, db } from "../../../firebaseConfig";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function SponsorSignIn() {
-  const [formValues, setFormValues] = useState({
-    email: "",
-    password: "",
-  });
-
+  const [formValues, setFormValues] = useState({ email: "", password: "" });
   const [errors, setErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [authError, setAuthError] = useState(null);
@@ -22,11 +18,11 @@ export default function SponsorSignIn() {
 
   const handleChange = (e) => {
     setFormValues({ ...formValues, [e.target.name]: e.target.value });
-    setAuthError(null); // Clear authentication error on input change
+    setAuthError(null); // Clear any authentication error when input changes
   };
 
   const validateForm = () => {
-    let newErrors = {};
+    const newErrors = {};
     if (!formValues.email) newErrors.email = "Email is required";
     else if (!/^\S+@\S+$/.test(formValues.email))
       newErrors.email = "Invalid email address";
@@ -39,8 +35,9 @@ export default function SponsorSignIn() {
     e.preventDefault();
     if (validateForm()) {
       setIsSubmitting(true);
+      setAuthError(null); // Clear previous auth errors
+
       try {
-        // Sign in with Firebase Auth
         const sponsorCredentials = await signInWithEmailAndPassword(
           auth,
           formValues.email,
@@ -51,18 +48,29 @@ export default function SponsorSignIn() {
         const sponsorDoc = await getDoc(doc(db, "sponsors", sponsor.uid));
 
         if (sponsorDoc.exists()) {
+
           console.log("User exists in athletes collection:", sponsorDoc.data());
           sessionStorage.setItem("sponsorUid", sponsor.uid);
           const sponsorData = sponsorDoc.data();
           const { companyName } = sponsorData;
           sessionStorage.setItem("sponsorName", companyName);
           navigate("/sponsor");
+
         } else {
-          setError("Sponsor not found in sponsors collection.");
-          console.log("Sponsor not found in sponsors collection.");
+          setAuthError(
+            "Sponsor not found. Please check your details or contact support."
+          );
         }
       } catch (err) {
+<<<<<<< HEAD
         setAuthError(err.message);
+=======
+        setAuthError(
+          "Sign-in failed. Please check your credentials and try again."
+        );
+        console.error("Sign-in error:", err.message);
+      } finally {
+>>>>>>> 9bf9f3c694cd9c99f179083ef7d30903f7b2d333
         setIsSubmitting(false);
       }
     }
@@ -84,11 +92,13 @@ export default function SponsorSignIn() {
         >
           Sponsor Sign In
         </motion.h1>
+
         {authError && (
           <Alert severity="error" className="mb-4">
             {authError}
           </Alert>
         )}
+
         <form onSubmit={onSubmit} className="space-y-6">
           <div>
             <TextField
@@ -146,6 +156,7 @@ export default function SponsorSignIn() {
             )}
           </Button>
         </form>
+
         <motion.p
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
