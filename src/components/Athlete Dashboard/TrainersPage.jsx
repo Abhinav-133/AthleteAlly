@@ -167,7 +167,6 @@ export default function AllTrainers() {
         </DialogActions>
       </Dialog>
 
-      {/* Confirmation Modal */}
       <Dialog open={confirmModalOpen} onClose={handleCloseConfirmModal} maxWidth="md" fullWidth>
         <DialogTitle style={{ textAlign: "center", fontWeight: "bold", fontSize: "1.5rem" }}>
           Are you sure you want to enroll with {selectedTrainer?.name}?

@@ -7,7 +7,6 @@ import { collection, getDocs, doc, getDoc, Timestamp } from "firebase/firestore"
 import { db } from "../../firebaseConfig";
 import { useNavigate } from "react-router-dom";
 
-// Define sports options
 const sports = [
   "All",
   "Swimming",

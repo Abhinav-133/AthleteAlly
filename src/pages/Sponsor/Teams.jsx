@@ -49,6 +49,7 @@ const TeamsPage = () => {
                 className="bg-white rounded-lg shadow-lg overflow-hidden mb-8 relative h-[525px]"
               >
                 <div className="md:flex">
+
                   {/* <div className="md:flex-shrink-0 flex items-center justify-center p-6 bg-blue-50">
                     <img
                       className="h-32 w-32 object-contain"
@@ -72,7 +73,7 @@ const TeamsPage = () => {
                     Team Members
                   </h1>
                   <div className="grid grid-cols-3 gap-4">
-                    {team.members.map((member, memberIndex) => (
+                    {(team.members??[]).map((member, memberIndex) => (
                       <div
                         key={memberIndex}
                         className="bg-blue-50 p-4 rounded-lg flex items-center justify-center shadow"
@@ -88,7 +89,7 @@ const TeamsPage = () => {
                     Sponsors
                   </h3>
                   <div className="grid grid-cols-3 gap-4">
-                    {team.sponsors.map((sponsor, sponsorIndex) => (
+                    {(team.sponsors?? []).map((sponsor, sponsorIndex) => (
                       <div
                         key={sponsorIndex}
                         className="bg-blue-50 p-4 rounded-lg flex items-center justify-center shadow"

@@ -25,7 +25,6 @@ import {
   getDocs,
 } from "firebase/firestore";
 
-// Sidebar Component
 const Sidebar = ({ isOpen, toggleSidebar }) => {
   const menuItems = [
     { icon: User, label: "My Profile", link: "/athlete-dashboard/profile" },
@@ -35,7 +34,6 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       link: "/athlete-dashboard/tournaments",
     },
     { icon: Dumbbell, label: "Latest News", link: "/athlete-dashboard/news" },
-    // { icon: Apple, label: "Community", link: "/athlete-dashboard/community" },
     {
       icon: Trophy,
       label: "Your Tournaments",
@@ -47,9 +45,9 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
       link: "/athlete-dashboard/alltrainers",
     },
     {
-      icon: Apple, // You can replace this with any other icon from Lucide icons
+      icon: Apple, 
       label: "Injury Prediction",
-      link: "https://injury-predictor-analysis-mcu3wkmffarbdwwwt239gf.streamlit.app/", // Link to your injury prediction page
+      link: "https://injury-predictor-analysis-mcu3wkmffarbdwwwt239gf.streamlit.app/",
     },
   ];
 
@@ -111,16 +109,9 @@ const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
   return (
     <div className="bg-gray-900 text-white p-4 flex justify-between items-center">
       <div className="flex items-center">
-        {/* <Search className="mr-2" />
-        <input
-          type="text"
-          placeholder="Search..."
-          className="bg-gray-800 text-white px-4 py-2 rounded-full focus:outline-none focus:ring-2 focus:ring-gray-600"
-        /> */}
       </div>
 
       <div className="flex items-center space-x-4">
-        {/* Notification Bell with Dropdown */}
         <div className="relative">
           <button
             onClick={toggleNotifications}
@@ -133,7 +124,6 @@ const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
             </span>
           </button>
 
-          {/* Notifications Dropdown */}
           {notificationsOpen && (
             <div className="absolute right-0 mt-2 w-64 bg-gray-800 rounded-md shadow-lg z-10">
               <ul className="py-2 text-sm text-white">
@@ -154,7 +144,6 @@ const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
           )}
         </div>
 
-        {/* User Dropdown */}
         <div className="relative">
           <div
             className="flex items-center space-x-2 cursor-pointer"
@@ -164,7 +153,6 @@ const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
             <ChevronDown size={16} />
           </div>
 
-          {/* User Options Dropdown */}
           {dropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-gray-800 rounded-md shadow-lg z-10">
               <ul className="py-2 text-sm text-white">
@@ -186,7 +174,6 @@ const Navbar = ({ userName, userImage, handleLogout, notifications }) => {
   );
 };
 
-// Fetch Tournaments Data Function
 const fetchUpcomingTournaments = async (db) => {
   const tournamentsRef = collection(db, "tournaments");
   const today = new Date();
@@ -202,21 +189,18 @@ const fetchUpcomingTournaments = async (db) => {
   return upcomingTournaments;
 };
 
-// Main Dashboard Component
 export default function Dashboard() {
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
   const [userData, setUserData] = useState(null);
   const [notifications, setNotifications] = useState([]);
-  const db = getFirestore(); // Initialize Firestore
-  const navigate = useNavigate(); // To redirect the user
+  const db = getFirestore(); 
+  const navigate = useNavigate(); 
 
   useEffect(() => {
     const getUserData = async () => {
-      // Retrieve userUid from sessionStorage
       const userUid = sessionStorage.getItem("userUid");
 
       if (!userUid) {
-        // Redirect to login page if no userUid is found
         navigate("/athlete-login");
         return;
       }
@@ -224,7 +208,6 @@ export default function Dashboard() {
       const data = await fetchUserData(userUid, db);
       setUserData(data);
 
-      // Fetch upcoming tournaments
       const upcomingTournaments = await fetchUpcomingTournaments(db);
       setNotifications(upcomingTournaments);
     };
@@ -237,9 +220,7 @@ export default function Dashboard() {
   };
 
   const handleLogout = () => {
-    // Clear sessionStorage
     sessionStorage.clear();
-    // Redirect to login page
     navigate("/");
   };
 
@@ -252,9 +233,9 @@ export default function Dashboard() {
         }`}
       >
         <Navbar
-          userName={userData?.name || "User"} // Display the actual name coming from userData
-          notifications={notifications} // Pass upcoming tournaments as notifications
-          handleLogout={handleLogout} // Pass the logout handler to Navbar
+          userName={userData?.name || "User"} 
+          notifications={notifications}
+          handleLogout={handleLogout} 
         />
         <Outlet />
       </div>
@@ -262,9 +243,8 @@ export default function Dashboard() {
   );
 }
 
-// Fetch User Data Function
 const fetchUserData = async (userId, db) => {
-  if (!userId) return; // Ensure userId exists
+  if (!userId) return; 
   try {
     const userDocRef = doc(db, "athletes", userId);
     const userDoc = await getDoc(userDocRef);

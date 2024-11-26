@@ -47,7 +47,7 @@ export default function AthleteTournaments() {
         return;
       }
       setAthleteId(userUid);
-      fetchRegisteredTournaments(userUid); // Call fetchRegisteredTournaments here
+      fetchRegisteredTournaments(userUid); 
     };
 
     getUserData();
@@ -56,7 +56,6 @@ export default function AthleteTournaments() {
 
   const today = new Date();
 
-  // Filter tournaments based on whether they're registered and if they're upcoming or past
   const registeredTournaments = tournaments.filter((tournament) =>
     registeredTournamentIds.includes(tournament.id)
   );

@@ -96,21 +96,21 @@ const SponsorEngagementPage = () => {
     }, 2000);
   };
 
-  const renderEntityImage = () => {
-    const entity = sponsoredEntities.find((e) => e.name === selectedEntity);
-    if (!entity) return null;
-    return (
-      <div className="mt-4 flex justify-center">
-        <img
-          src={entity.type === "Team" ? entity.logo : entity.image}
-          alt={entity.name}
-          className={`h-32 w-32 object-cover ${
-            entity.type === "Team" ? "object-contain" : "rounded-full"
-          }`}
-        />
-      </div>
-    );
-  };
+  // const renderEntityImage = () => {
+  //   const entity = sponsoredEntities.find((e) => e.name === selectedEntity);
+  //   if (!entity) return null;
+  //   return (
+  //     <div className="mt-4 flex justify-center">
+  //       <img
+  //         src={entity.type === "Team" ? entity.logo : entity.image}
+  //         alt={entity.name}
+  //         className={`h-32 w-32 object-cover ${
+  //           entity.type === "Team" ? "object-contain" : "rounded-full"
+  //         }`}
+  //       />
+  //     </div>
+    //  );
+  //};
 
   return (
     <div className="flex bg-gray-100 min-h-screen">
@@ -147,7 +147,7 @@ const SponsorEngagementPage = () => {
                       </option>
                     ))}
                   </select>
-                  {renderEntityImage()}
+                  {/* {renderEntityImage()} */}
                 </div>
 
                 <div>
