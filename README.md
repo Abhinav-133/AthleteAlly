@@ -23,15 +23,17 @@ AthleteAlly is a web application designed to assist athletes in managing their p
 AthleteAlly features four distinct dashboards to cater to different user roles:
 
 1. **Athletes Dashboard**
+   ![image](https://github.com/user-attachments/assets/00041038-3eca-47a2-8c99-62cd73e36985)
+
    - Allows athletes to manage their profiles, view registered tournaments, and track their performance.
 
-2. **Trainers Dashboard**
+3. **Trainers Dashboard**
    - Provides trainers with the ability to manage their profiles, view athlete registrations, and offer training sessions.
 
-3. **Sponsors Dashboard**
+4. **Sponsors Dashboard**
    - Enables sponsors to view and manage their sponsorship details and connect with athletes and trainers.
 
-4. **Master Admin Dashboard**
+5. **Master Admin Dashboard**
    - A comprehensive dashboard for administrators to oversee the entire application, manage user roles, and monitor statistics across all categories.
 
 ## Technologies Used
