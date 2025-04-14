@@ -1,4 +1,5 @@
 # AthleteAlly
+![image](https://github.com/user-attachments/assets/d44501fe-5665-4148-93c4-4f089d51a6f0)
 
 AthleteAlly is a web application designed to assist athletes in managing their profiles, registering for tournaments, and connecting with trainers. The application is built using React and Firebase, providing a seamless and interactive user experience.
 
