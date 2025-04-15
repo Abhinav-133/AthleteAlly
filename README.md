@@ -36,6 +36,8 @@ AthleteAlly features four distinct dashboards to cater to different user roles:
    - Enables sponsors to view and manage their sponsorship details and connect with athletes and trainers.
 
 5. **Master Admin Dashboard**
+   ![image](https://github.com/user-attachments/assets/f0676787-f74b-4f4b-95f6-77408ff3cd87)
+
    - A comprehensive dashboard for administrators to oversee the entire application, manage user roles, and monitor statistics across all categories.
 
 ## Technologies Used
